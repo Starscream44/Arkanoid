@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iterator>
 
-namespace SnakeGame
+namespace Arkanoid
 {
 	void MenuItem::SetTextString(const sf::String& value)
 	{
@@ -121,6 +121,11 @@ namespace SnakeGame
 			child.parent = &item;
 			InitMenuItem(child);
 		}
+	}
+
+	void Menu::Update(float)
+	{
+		// Currently menu does not need time-based updates.
 	}
 
 	void Menu::Draw(sf::RenderWindow& window, sf::Vector2f position, sf::Vector2f origin)

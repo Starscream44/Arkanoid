@@ -2,8 +2,11 @@
 #include "SFML/Graphics.hpp"
 #include "Paddle.h"
 #include "Ball.h"
+#include "Block.h"
 
-namespace SnakeGame
+#include <vector>
+
+namespace Arkanoid
 {
 	class Game;
 
@@ -25,6 +28,7 @@ namespace SnakeGame
 		sf::Text inputHintText;
 		Paddle paddle;
 		Ball ball;
+		std::vector<Block> blocks;
 
 		int score = 0;
 	};

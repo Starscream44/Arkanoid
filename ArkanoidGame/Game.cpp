@@ -5,9 +5,10 @@
 #include "GameStateGameOver.h"
 #include "GameStatePauseMenu.h"
 #include "GameStateMainMenu.h"
+#include "GameStateVictory.h"
 #include "GameStateRecords.h"
 
-namespace SnakeGame
+namespace Arkanoid
 {
 
 	GameState::GameState(GameStateType type, bool isExclusivelyVisible)
@@ -72,6 +73,14 @@ namespace SnakeGame
 			InitGameStateGameOver(*(GameStateGameOverData*)data);
 			break;
 		}
+
+		case GameStateType::Victory:
+		{
+			data = new GameStateVictoryData();
+			InitGameStateVictory(*(GameStateVictoryData*)data);
+			break;
+		}
+
 		case GameStateType::ExitDialog:
 		{
 			data = new GameStatePauseMenuData();
@@ -122,6 +131,14 @@ namespace SnakeGame
 			delete (GameStateGameOverData*)data;
 			break;
 		}
+
+		case GameStateType::Victory:
+		{
+			ShutdownGameStateVictory(*(GameStateVictoryData*)data);
+			delete (GameStateVictoryData*)data;
+			break;
+		}
+
 		case GameStateType::ExitDialog:
 		{
 			ShutdownGameStatePauseMenu(*(GameStatePauseMenuData*)data);
@@ -326,6 +343,11 @@ namespace SnakeGame
 			HandleGameStateGameOverWindowEvent(*(GameStateGameOverData*)state.data, event);
 			break;
 		}
+		case GameStateType::Victory:
+		{
+			HandleGameStateVictoryWindowEvent(*(GameStateVictoryData*)state.data, event);
+			break;
+		}
 		case GameStateType::ExitDialog:
 		{
 			HandleGameStatePauseMenuWindowEvent(*(GameStatePauseMenuData*)state.data, event);
@@ -361,6 +383,11 @@ namespace SnakeGame
 			UpdateGameStateGameOver(*(GameStateGameOverData*)state.data, timeDelta);
 			break;
 		}
+		case GameStateType::Victory:
+		{
+			UpdateGameStateVictory(*(GameStateVictoryData*)state.data, timeDelta);
+			break;
+		}
 		case GameStateType::ExitDialog:
 		{
 			UpdateGameStatePauseMenu(*(GameStatePauseMenuData*)state.data, timeDelta);
@@ -394,6 +421,11 @@ namespace SnakeGame
 		case GameStateType::GameOver:
 		{
 			DrawGameStateGameOver(*(GameStateGameOverData*)state.data, window);
+			break;
+		}
+		case GameStateType::Victory:
+		{
+			DrawGameStateVictory(*(GameStateVictoryData*)state.data, window);
 			break;
 		}
 		case GameStateType::ExitDialog:

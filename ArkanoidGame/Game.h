@@ -5,7 +5,7 @@
 #include "GameSettings.h"
 #include <unordered_map>
 
-namespace SnakeGame
+namespace Arkanoid
 {
 	enum class GameOptions: std::uint8_t
 	{
@@ -22,6 +22,7 @@ namespace SnakeGame
 		MainMenu,
 		Playing,
 		GameOver,
+		Victory,
 		ExitDialog,
 		Records,
 	};

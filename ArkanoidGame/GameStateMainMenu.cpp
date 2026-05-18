@@ -3,7 +3,7 @@
 #include "Game.h"
 #include <assert.h>
 
-namespace SnakeGame
+namespace Arkanoid
 {
 	void InitGameStateMainMenu(GameStateMainMenuData& data)
 	{
@@ -90,7 +90,7 @@ namespace SnakeGame
 		exitGameItem.AddChild(noItem);
 
 		MenuItem mainMenu;
-		mainMenu.SetHintString("Snake Game");
+		mainMenu.SetHintString("Arkanoid");
 		mainMenu.SetHintFont(data.font);
 		mainMenu.SetHintCharacterSize(48);
 		mainMenu.SetHintFillColor(sf::Color::Red);

@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-namespace SnakeGame
+namespace Arkanoid
 {
 	// Resources path
 	const std::string RESOURCES_PATH = "Resources/";

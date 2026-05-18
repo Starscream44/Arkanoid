@@ -160,6 +160,8 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="GameStateVictory.cpp" />
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -171,11 +173,13 @@
     <ClCompile Include="GameStateRecords.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Text.cpp" />
-    <ClCompile Include="Snake.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameStateVictory.h" />
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Game.h" />

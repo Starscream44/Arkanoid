@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-namespace SnakeGame
+namespace Arkanoid
 {
 	class Paddle;
 
@@ -13,6 +13,8 @@ namespace SnakeGame
 		void Draw(sf::RenderWindow& window) const;
 
 		sf::FloatRect GetBounds() const;
+
+		void BounceFromBlock(const sf::FloatRect& blockBounds);
 
 	private:
 		void ClampAndBounceFromWalls();

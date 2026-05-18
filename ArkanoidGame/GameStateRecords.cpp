@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <sstream>
 
-namespace SnakeGame
+namespace Arkanoid
 {
 	void InitGameStateRecords(GameStateRecordsData& data)
 	{

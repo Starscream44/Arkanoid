@@ -2,7 +2,7 @@
 #include "Paddle.h"
 #include <cmath>
 
-namespace SnakeGame
+namespace Arkanoid
 {
 	void Ball::Init(float newFieldWidth, float newFieldHeight)
 	{
@@ -88,5 +88,55 @@ namespace SnakeGame
 
 			shape.setPosition(ballX, paddleBounds.top - shape.getRadius());
 		}
+	}
+
+	void Ball::BounceFromBlock(const sf::FloatRect& blockBounds)
+	{
+		const sf::FloatRect ballBounds = GetBounds();
+
+		if (!ballBounds.intersects(blockBounds))
+		{
+			return;
+		}
+
+		const float ballCenterX = ballBounds.left + ballBounds.width * 0.5f;
+		const float ballCenterY = ballBounds.top + ballBounds.height * 0.5f;
+
+		const float blockCenterX = blockBounds.left + blockBounds.width * 0.5f;
+		const float blockCenterY = blockBounds.top + blockBounds.height * 0.5f;
+
+		const float overlapX = ballBounds.width * 0.5f + blockBounds.width * 0.5f - std::abs(ballCenterX - blockCenterX);
+		const float overlapY = ballBounds.height * 0.5f + blockBounds.height * 0.5f - std::abs(ballCenterY - blockCenterY);
+
+		sf::Vector2f position = shape.getPosition();
+
+		if (overlapX < overlapY)
+		{
+			velocity.x = -velocity.x;
+
+			if (ballCenterX < blockCenterX)
+			{
+				position.x -= overlapX;
+			}
+			else
+			{
+				position.x += overlapX;
+			}
+		}
+		else
+		{
+			velocity.y = -velocity.y;
+
+			if (ballCenterY < blockCenterY)
+			{
+				position.y -= overlapY;
+			}
+			else
+			{
+				position.y += overlapY;
+			}
+		}
+
+		shape.setPosition(position);
 	}
 }

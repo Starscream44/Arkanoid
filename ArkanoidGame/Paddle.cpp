@@ -1,7 +1,7 @@
 #include "Paddle.h"
 #include <algorithm>
 
-namespace SnakeGame
+namespace Arkanoid
 {
 	void Paddle::Init(float newFieldWidth, float newFieldHeight)
 	{
