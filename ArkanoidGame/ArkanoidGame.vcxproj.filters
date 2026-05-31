@@ -55,6 +55,9 @@
     <ClCompile Include="DurableBlock.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="GlassBlock.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -103,5 +106,8 @@
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="DurableBlock.h" />
+    <ClInclude Include="GlassBlock.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -42,7 +42,10 @@ namespace Arkanoid
 		}
 		else if (Block* block = dynamic_cast<Block*>(&collidable))
 		{
-			BounceFromBlock(block->GetBounds());
+			if (block->ShouldBounceBall())
+			{
+				BounceFromBlock(block->GetBounds());
+			}
 		}
 	}
 

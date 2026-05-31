@@ -163,6 +163,7 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="DurableBlock.cpp" />
     <ClCompile Include="GameStateVictory.cpp" />
+    <ClCompile Include="GlassBlock.cpp" />
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="DurableBlock.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameStateVictory.h" />
+    <ClInclude Include="GlassBlock.h" />
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Game.h" />

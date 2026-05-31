@@ -6,12 +6,14 @@
 #include "Ball.h"
 #include "Block.h"
 #include "DurableBlock.h"
+#include "GlassBlock.h"
 
 #include <assert.h>
-#include <memory>
-#include <string>
 #include <algorithm>
+#include <memory>
 #include <random>
+#include <string>
+#include <vector>
 
 namespace Arkanoid
 {
@@ -23,35 +25,61 @@ namespace Arkanoid
 		data.score = 0;
 		data.blocks.clear();
 
-		const sf::Vector2f blockSize = { 120.f, 30.f };
-
-		const float startX = 75.f;
-		const float startY = 100.f;
-		const float spacingX = 10.f;
-		const float spacingY = 10.f;
-
-		const int columns = 5;
-		const int rows = 2;
+		const int columns = 10;
+		const int rows = 3;
 		const int totalBlocks = rows * columns;
-		const int durableBlocksCount = 3;
 
-		std::vector<int> durableBlockIndexes;
+		const int durableBlocksCount = 6;
+		const int glassBlocksCount = 4;
+
+		const int actualDurableBlocksCount = std::min(durableBlocksCount, totalBlocks);
+		const int actualGlassBlocksCount = std::min(glassBlocksCount, totalBlocks - actualDurableBlocksCount);
+
+		const float marginX = 40.f;
+		const float startY = 90.f;
+		const float spacingX = 5.f;
+		const float spacingY = 8.f;
+
+		const float blockWidth =
+			(SCREEN_WIDTH - marginX * 2.f - spacingX * (columns - 1)) / columns;
+
+		const sf::Vector2f blockSize = { blockWidth, 25.f };
+
+		enum class BlockType
+		{
+			Regular,
+			Durable,
+			Glass
+		};
+
+		std::vector<BlockType> blockTypes(totalBlocks, BlockType::Regular);
+
+		std::vector<int> blockIndexes;
 
 		for (int i = 0; i < totalBlocks; ++i)
 		{
-			durableBlockIndexes.push_back(i);
+			blockIndexes.push_back(i);
 		}
 
 		std::random_device randomDevice;
 		std::mt19937 randomGenerator(randomDevice());
 
 		std::shuffle(
-			durableBlockIndexes.begin(),
-			durableBlockIndexes.end(),
+			blockIndexes.begin(),
+			blockIndexes.end(),
 			randomGenerator
 		);
 
-		durableBlockIndexes.resize(durableBlocksCount);
+		for (int i = 0; i < actualDurableBlocksCount; ++i)
+		{
+			blockTypes[blockIndexes[i]] = BlockType::Durable;
+		}
+
+		for (int i = 0; i < actualGlassBlocksCount; ++i)
+		{
+			const int index = actualDurableBlocksCount + i;
+			blockTypes[blockIndexes[index]] = BlockType::Glass;
+		}
 
 		for (int row = 0; row < rows; ++row)
 		{
@@ -61,18 +89,13 @@ namespace Arkanoid
 
 				const sf::Vector2f position =
 				{
-					startX + column * (blockSize.x + spacingX),
+					marginX + column * (blockSize.x + spacingX),
 					startY + row * (blockSize.y + spacingY)
 				};
 
-				const bool isDurableBlock =
-					std::find(
-						durableBlockIndexes.begin(),
-						durableBlockIndexes.end(),
-						blockIndex
-					) != durableBlockIndexes.end();
-
-				if (isDurableBlock)
+				switch (blockTypes[blockIndex])
+				{
+				case BlockType::Durable:
 				{
 					auto durableBlock = std::make_unique<DurableBlock>();
 
@@ -87,17 +110,33 @@ namespace Arkanoid
 					);
 
 					data.blocks.push_back(std::move(durableBlock));
+					break;
 				}
-				else
+
+				case BlockType::Glass:
+				{
+					auto glassBlock = std::make_unique<GlassBlock>();
+
+					glassBlock->Init(position, blockSize);
+
+					data.blocks.push_back(std::move(glassBlock));
+					break;
+				}
+
+				case BlockType::Regular:
+				default:
 				{
 					auto block = std::make_unique<Block>();
 
 					block->Init(position, blockSize);
 
 					data.blocks.push_back(std::move(block));
+					break;
+				}
 				}
 			}
 		}
+
 		assert(data.font.loadFromFile(FONTS_PATH + "Roboto-Regular.ttf"));
 
 		data.scoreText.setFont(data.font);

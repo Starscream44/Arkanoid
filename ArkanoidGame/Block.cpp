@@ -36,10 +36,16 @@ namespace Arkanoid
 		return !isDestroyed && Collidable::GetCollision(collidable);
 	}
 
+	bool Block::ShouldBounceBall() const
+	{
+		return true;
+	}
+
 	void Block::OnHit(Collidable& collidable)
 	{
 		Destroy();
 	}
+
 
 	void Block::Destroy()
 	{
