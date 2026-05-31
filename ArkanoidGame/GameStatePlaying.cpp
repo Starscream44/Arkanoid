@@ -63,7 +63,8 @@ namespace Arkanoid
 	void UpdateGameStatePlaying(GameStatePlayingData& data, float timeDelta)
 	{
 		data.paddle.Update(timeDelta);
-		data.ball.Update(timeDelta, data.paddle);
+		data.ball.Update(timeDelta);
+		data.ball.CheckCollision(data.paddle);
 
 		for (Block& block : data.blocks)
 		{
@@ -74,11 +75,8 @@ namespace Arkanoid
 				continue;
 			}
 
-			if (data.ball.GetBounds().intersects(block.GetBounds()))
+			if (data.ball.CheckCollision(block))
 			{
-				data.ball.BounceFromBlock(block.GetBounds());
-				block.Destroy();
-
 				data.score += 1;
 
 				break;

@@ -1,6 +1,8 @@
 #include "Ball.h"
 #include "Paddle.h"
+#include "Block.h"
 #include <cmath>
+
 
 namespace Arkanoid
 {
@@ -15,12 +17,11 @@ namespace Arkanoid
 		shape.setPosition(fieldWidth * 0.5f, fieldHeight * 0.5f);
 	}
 
-	void Ball::Update(float timeDelta, const Paddle& paddle)
+	void Ball::Update(float timeDelta)
 	{
 		shape.move(velocity * timeDelta);
 
 		ClampAndBounceFromWalls();
-		BounceFromPaddle(paddle);
 	}
 
 	void Ball::Draw(sf::RenderWindow& window) const
@@ -31,6 +32,18 @@ namespace Arkanoid
 	sf::FloatRect Ball::GetBounds() const
 	{
 		return shape.getGlobalBounds();
+	}
+
+	void Ball::OnHit(Collidable& collidable)
+	{
+		if (Paddle* paddle = dynamic_cast<Paddle*>(&collidable))
+		{
+			BounceFromPaddle(*paddle);
+		}
+		else if (Block* block = dynamic_cast<Block*>(&collidable))
+		{
+			BounceFromBlock(block->GetBounds());
+		}
 	}
 
 	void Ball::ClampAndBounceFromWalls()

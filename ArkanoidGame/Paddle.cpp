@@ -44,6 +44,12 @@ namespace Arkanoid
 		return shape.getGlobalBounds();
 	}
 
+	void Paddle::OnHit(Collidable& collidable)
+	{
+		// Paddle does not need to react.
+		// Ball reacts to the paddle.
+	}
+
 	void Paddle::ClampInsideField()
 	{
 		const float halfWidth = shape.getSize().x * 0.5f;

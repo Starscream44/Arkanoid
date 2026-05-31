@@ -1,20 +1,24 @@
 #pragma once
+#include "Collidable.h"
 #include <SFML/Graphics.hpp>
 
 namespace Arkanoid
 {
 	class Paddle;
 
-	class Ball
+	class Ball : public Collidable
 	{
 	public:
 		void Init(float fieldWidth, float fieldHeight);
-		void Update(float timeDelta, const Paddle& paddle);
+		void Update(float timeDelta);
 		void Draw(sf::RenderWindow& window) const;
 
-		sf::FloatRect GetBounds() const;
+		sf::FloatRect GetBounds() const override;
 
 		void BounceFromBlock(const sf::FloatRect& blockBounds);
+
+	protected:
+		void OnHit(Collidable& collidable) override;
 
 	private:
 		void ClampAndBounceFromWalls();

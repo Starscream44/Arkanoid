@@ -31,6 +31,16 @@ namespace Arkanoid
 		return shape.getGlobalBounds();
 	}
 
+	bool Block::GetCollision(const Collidable& collidable) const
+	{
+		return !isDestroyed && Collidable::GetCollision(collidable);
+	}
+
+	void Block::OnHit(Collidable& collidable)
+	{
+		Destroy();
+	}
+
 	void Block::Destroy()
 	{
 		isDestroyed = true;

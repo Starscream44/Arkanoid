@@ -96,5 +96,8 @@
     <ClInclude Include="GameStateVictory.h">
       <Filter>Sources</Filter>
     </ClInclude>
+    <ClInclude Include="Collidable.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

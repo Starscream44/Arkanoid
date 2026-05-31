@@ -1,16 +1,20 @@
 #pragma once
+#include "Collidable.h"
 #include <SFML/Graphics.hpp>
 
 namespace Arkanoid
 {
-	class Paddle
+	class Paddle : public Collidable
 	{
 	public:
 		void Init(float fieldWidth, float fieldHeight);
 		void Update(float timeDelta);
 		void Draw(sf::RenderWindow& window) const;
 
-		sf::FloatRect GetBounds() const;
+		sf::FloatRect GetBounds() const override;
+
+	protected:
+		void OnHit(Collidable& collidable) override;
 
 	private:
 		void ClampInsideField();
