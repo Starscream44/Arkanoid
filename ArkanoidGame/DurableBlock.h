@@ -1,0 +1,28 @@
+#pragma once
+
+#include "Block.h"
+
+#include <vector>
+
+namespace Arkanoid
+{
+	class DurableBlock : public Block
+	{
+	public:
+		void Init(
+			const sf::Vector2f& position,
+			const sf::Vector2f& size,
+			const std::vector<sf::Color>& damageColors
+		);
+
+	protected:
+		void OnHit(Collidable& collidable) override;
+
+	private:
+		void UpdateColor();
+
+	private:
+		int hitPoints = 3;
+		std::vector<sf::Color> damageColors;
+	};
+}

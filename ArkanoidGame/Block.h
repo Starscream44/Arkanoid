@@ -1,6 +1,8 @@
 #pragma once
+
 #include "GameObject.h"
 #include "Collidable.h"
+
 #include <SFML/Graphics.hpp>
 
 namespace Arkanoid
@@ -8,7 +10,9 @@ namespace Arkanoid
 	class Block : public GameObject, public Collidable
 	{
 	public:
-		void Init(const sf::Vector2f& position, const sf::Vector2f& size);
+		virtual ~Block() = default;
+
+		virtual void Init(const sf::Vector2f& position, const sf::Vector2f& size);
 
 		void Update(float timeDelta) override;
 		void Draw(sf::RenderWindow& window) const override;
@@ -22,7 +26,7 @@ namespace Arkanoid
 	protected:
 		void OnHit(Collidable& collidable) override;
 
-	private:
+	protected:
 		sf::RectangleShape shape;
 		bool isDestroyed = false;
 	};

@@ -1,10 +1,17 @@
 #include "GameStatePlaying.h"
+
 #include "Application.h"
 #include "Game.h"
 #include "Text.h"
-#include <assert.h>
 #include "Ball.h"
+#include "Block.h"
+#include "DurableBlock.h"
+
+#include <assert.h>
+#include <memory>
 #include <string>
+#include <algorithm>
+#include <random>
 
 namespace Arkanoid
 {
@@ -12,10 +19,12 @@ namespace Arkanoid
 	{
 		data.paddle.Init(SCREEN_WIDTH, SCREEN_HEGHT);
 		data.ball.Init(SCREEN_WIDTH, SCREEN_HEGHT);
-	
+
+		data.score = 0;
 		data.blocks.clear();
 
 		const sf::Vector2f blockSize = { 120.f, 30.f };
+
 		const float startX = 75.f;
 		const float startY = 100.f;
 		const float spacingX = 10.f;
@@ -23,12 +32,32 @@ namespace Arkanoid
 
 		const int columns = 5;
 		const int rows = 2;
+		const int totalBlocks = rows * columns;
+		const int durableBlocksCount = 3;
+
+		std::vector<int> durableBlockIndexes;
+
+		for (int i = 0; i < totalBlocks; ++i)
+		{
+			durableBlockIndexes.push_back(i);
+		}
+
+		std::random_device randomDevice;
+		std::mt19937 randomGenerator(randomDevice());
+
+		std::shuffle(
+			durableBlockIndexes.begin(),
+			durableBlockIndexes.end(),
+			randomGenerator
+		);
+
+		durableBlockIndexes.resize(durableBlocksCount);
 
 		for (int row = 0; row < rows; ++row)
 		{
 			for (int column = 0; column < columns; ++column)
 			{
-				Block block;
+				const int blockIndex = row * columns + column;
 
 				const sf::Vector2f position =
 				{
@@ -36,17 +65,51 @@ namespace Arkanoid
 					startY + row * (blockSize.y + spacingY)
 				};
 
-				block.Init(position, blockSize);
-				data.blocks.push_back(block);
+				const bool isDurableBlock =
+					std::find(
+						durableBlockIndexes.begin(),
+						durableBlockIndexes.end(),
+						blockIndex
+					) != durableBlockIndexes.end();
+
+				if (isDurableBlock)
+				{
+					auto durableBlock = std::make_unique<DurableBlock>();
+
+					durableBlock->Init(
+						position,
+						blockSize,
+						{
+							sf::Color::Red,
+							sf::Color::Yellow,
+							sf::Color::Blue
+						}
+					);
+
+					data.blocks.push_back(std::move(durableBlock));
+				}
+				else
+				{
+					auto block = std::make_unique<Block>();
+
+					block->Init(position, blockSize);
+
+					data.blocks.push_back(std::move(block));
+				}
 			}
 		}
-
 		assert(data.font.loadFromFile(FONTS_PATH + "Roboto-Regular.ttf"));
+
+		data.scoreText.setFont(data.font);
+		data.scoreText.setCharacterSize(24);
+		data.scoreText.setFillColor(sf::Color::White);
+		data.scoreText.setPosition(20.f, 20.f);
+		data.scoreText.setString("Score: " + std::to_string(data.score));
 	}
 
 	void ShutdownGameStatePlaying(GameStatePlayingData& data)
 	{
-		// Nothing special here for now
+		data.blocks.clear();
 	}
 
 	void HandleGameStatePlayingWindowEvent(GameStatePlayingData& data, const sf::Event& event)
@@ -63,21 +126,26 @@ namespace Arkanoid
 	void UpdateGameStatePlaying(GameStatePlayingData& data, float timeDelta)
 	{
 		data.paddle.Update(timeDelta);
+
 		data.ball.Update(timeDelta);
+
 		data.ball.CheckCollision(data.paddle);
 
-		for (Block& block : data.blocks)
+		for (std::unique_ptr<Block>& block : data.blocks)
 		{
-			block.Update(timeDelta);
+			block->Update(timeDelta);
 
-			if (block.IsDestroyed())
+			if (block->IsDestroyed())
 			{
 				continue;
 			}
 
-			if (data.ball.CheckCollision(block))
+			if (data.ball.CheckCollision(*block))
 			{
-				data.score += 1;
+				if (block->IsDestroyed())
+				{
+					data.score += 1;
+				}
 
 				break;
 			}
@@ -85,9 +153,9 @@ namespace Arkanoid
 
 		bool allBlocksDestroyed = !data.blocks.empty();
 
-		for (const Block& block : data.blocks)
+		for (const std::unique_ptr<Block>& block : data.blocks)
 		{
-			if (!block.IsDestroyed())
+			if (!block->IsDestroyed())
 			{
 				allBlocksDestroyed = false;
 				break;
@@ -107,12 +175,14 @@ namespace Arkanoid
 	{
 		window.draw(data.background);
 
-		for (const Block& block : data.blocks)
+		for (const std::unique_ptr<Block>& block : data.blocks)
 		{
-			block.Draw(window);
+			block->Draw(window);
 		}
 
 		data.paddle.Draw(window);
 		data.ball.Draw(window);
+
+		window.draw(data.scoreText);
 	}
 }

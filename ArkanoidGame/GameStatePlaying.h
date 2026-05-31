@@ -5,6 +5,7 @@
 #include "Block.h"
 
 #include <vector>
+#include <memory>
 
 namespace Arkanoid
 {
@@ -28,7 +29,7 @@ namespace Arkanoid
 		sf::Text inputHintText;
 		Paddle paddle;
 		Ball ball;
-		std::vector<Block> blocks;
+		std::vector<std::unique_ptr<Block>> blocks;
 
 		int score = 0;
 	};
