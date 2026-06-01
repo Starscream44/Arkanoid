@@ -102,6 +102,7 @@ namespace Arkanoid
 					durableBlock->Init(
 						position,
 						blockSize,
+						3,
 						{
 							sf::Color::Red,
 							sf::Color::Yellow,

@@ -1,17 +1,22 @@
 #include "DurableBlock.h"
 
+#include <algorithm>
+
 namespace Arkanoid
 {
 	void DurableBlock::Init(
 		const sf::Vector2f& position,
 		const sf::Vector2f& size,
+		int hitPoints,
 		const std::vector<sf::Color>& damageColors
 	)
 	{
 		Block::Init(position, size);
 
+		maxHitPoints = std::max(1, hitPoints);
+		currentHitPoints = maxHitPoints;
+
 		this->damageColors = damageColors;
-		hitPoints = static_cast<int>(damageColors.size());
 
 		UpdateColor();
 	}
@@ -23,9 +28,9 @@ namespace Arkanoid
 			return;
 		}
 
-		--hitPoints;
+		--currentHitPoints;
 
-		if (hitPoints <= 0)
+		if (currentHitPoints <= 0)
 		{
 			Destroy();
 			return;
@@ -41,11 +46,19 @@ namespace Arkanoid
 			return;
 		}
 
-		const int colorIndex = static_cast<int>(damageColors.size()) - hitPoints;
-
-		if (colorIndex >= 0 && colorIndex < static_cast<int>(damageColors.size()))
+		if (maxHitPoints <= 1)
 		{
-			shape.setFillColor(damageColors[colorIndex]);
+			shape.setFillColor(damageColors.back());
+			return;
 		}
+
+		const int damageTaken = maxHitPoints - currentHitPoints;
+
+		const int colorIndex = std::min(
+			damageTaken,
+			static_cast<int>(damageColors.size()) - 1
+		);
+
+		shape.setFillColor(damageColors[colorIndex]);
 	}
 }
