@@ -4,6 +4,7 @@
 #include "Ball.h"
 #include "Block.h"
 #include "BlockFactory.h"
+#include "LevelLoader.h"
 
 #include <vector>
 #include <memory>
@@ -20,6 +21,9 @@ namespace Arkanoid
 		friend void HandleGameStatePlayingWindowEvent(GameStatePlayingData& data, const sf::Event& event);
 		friend void UpdateGameStatePlaying(GameStatePlayingData& data, float timeDelta);
 		friend void DrawGameStatePlaying(GameStatePlayingData& data, sf::RenderWindow& window);
+		friend void InitBlockFactories(GameStatePlayingData& data);
+		friend void ResetBlockFactoryCounters(GameStatePlayingData& data);
+		friend void LoadGameLevel(GameStatePlayingData& data, int levelIndex);
 
 	private:
 		sf::Font font;
@@ -38,11 +42,11 @@ namespace Arkanoid
 		//Blocks creator
 		std::unordered_map<BlockType, std::unique_ptr<BlockFactory>> factories;
 		int breakableBlocksCount = 0;
+		int destroyedBreakableBlocksCount = 0;
 		
 		//Levels
-		/*LevelLoader LevelLoader;
+		LevelLoader levelLoader;
 		int currentLevel = 0;
-		*/
 	};
 
 	void InitGameStatePlaying(GameStatePlayingData& data);

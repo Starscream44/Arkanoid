@@ -64,6 +64,9 @@
     <ClCompile Include="UnbreakableBlock.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="LevelLoader.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -119,6 +122,9 @@
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="UnbreakableBlock.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelLoader.h">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>
