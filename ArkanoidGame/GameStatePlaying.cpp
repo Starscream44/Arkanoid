@@ -5,8 +5,7 @@
 #include "Text.h"
 #include "Ball.h"
 #include "Block.h"
-#include "DurableBlock.h"
-#include "GlassBlock.h"
+#include "BlockFactory.h"
 
 #include <assert.h>
 #include <algorithm>
@@ -15,25 +14,38 @@
 #include <string>
 #include <vector>
 
+
 namespace Arkanoid
 {
 	void InitGameStatePlaying(GameStatePlayingData& data)
 	{
-		data.paddle.Init(SETTINGS.SCREEN_WIDTH, SETTINGS.SCREEN_HEGHT);
-		data.ball.Init(SETTINGS.SCREEN_WIDTH, SETTINGS.SCREEN_HEGHT);
+		data.paddle.Init(static_cast<float>(SETTINGS.SCREEN_WIDTH), static_cast<float>(SETTINGS.SCREEN_HEGHT));
+		data.ball.Init(static_cast<float>(SETTINGS.SCREEN_WIDTH), static_cast<float>(SETTINGS.SCREEN_HEGHT));
 
 		data.score = 0;
+		data.breakableBlocksCount = 0;
 		data.blocks.clear();
+		data.factories.clear();
+
+		data.factories.emplace(BlockType::Regular, std::make_unique<RegularBlockFactory>());
+		data.factories.emplace(BlockType::ThreeHit, std::make_unique<ThreeHitBlockFactory>());
+		data.factories.emplace(BlockType::Glass, std::make_unique<GlassBlockFactory>());
+		data.factories.emplace(BlockType::Unbreakable, std::make_unique<UnbreakableBlockFactory>());
 
 		const int columns = 10;
 		const int rows = 3;
 		const int totalBlocks = rows * columns;
 
-		const int durableBlocksCount = 6;
+		const int threeHitBlocksCount = 6;
 		const int glassBlocksCount = 4;
+		const int unbreakableBlocksCount = 3;
 
-		const int actualDurableBlocksCount = std::min(durableBlocksCount, totalBlocks);
-		const int actualGlassBlocksCount = std::min(glassBlocksCount, totalBlocks - actualDurableBlocksCount);
+		const int actualThreeHitBlocksCount = std::min(threeHitBlocksCount, totalBlocks);
+		const int actualGlassBlocksCount = std::min(glassBlocksCount, totalBlocks - actualThreeHitBlocksCount);
+		const int actualUnbreakableBlocksCount = std::min(
+			unbreakableBlocksCount,
+			totalBlocks - actualThreeHitBlocksCount - actualGlassBlocksCount
+		);
 
 		const float marginX = 40.f;
 		const float startY = 90.f;
@@ -44,13 +56,6 @@ namespace Arkanoid
 			(SETTINGS.SCREEN_WIDTH - marginX * 2.f - spacingX * (columns - 1)) / columns;
 
 		const sf::Vector2f blockSize = { blockWidth, 25.f };
-
-		enum class BlockType
-		{
-			Regular,
-			Durable,
-			Glass
-		};
 
 		std::vector<BlockType> blockTypes(totalBlocks, BlockType::Regular);
 
@@ -70,15 +75,21 @@ namespace Arkanoid
 			randomGenerator
 		);
 
-		for (int i = 0; i < actualDurableBlocksCount; ++i)
+		for (int i = 0; i < actualThreeHitBlocksCount; ++i)
 		{
-			blockTypes[blockIndexes[i]] = BlockType::Durable;
+			blockTypes[blockIndexes[i]] = BlockType::ThreeHit;
 		}
 
 		for (int i = 0; i < actualGlassBlocksCount; ++i)
 		{
-			const int index = actualDurableBlocksCount + i;
+			const int index = actualThreeHitBlocksCount + i;
 			blockTypes[blockIndexes[index]] = BlockType::Glass;
+		}
+
+		for (int i = 0; i < actualUnbreakableBlocksCount; ++i)
+		{
+			const int index = actualThreeHitBlocksCount + actualGlassBlocksCount + i;
+			blockTypes[blockIndexes[index]] = BlockType::Unbreakable;
 		}
 
 		for (int row = 0; row < rows; ++row)
@@ -93,49 +104,14 @@ namespace Arkanoid
 					startY + row * (blockSize.y + spacingY)
 				};
 
-				switch (blockTypes[blockIndex])
-				{
-				case BlockType::Durable:
-				{
-					auto durableBlock = std::make_unique<DurableBlock>();
-
-					durableBlock->Init(
-						position,
-						blockSize,
-						3,
-						{
-							sf::Color::Red,
-							sf::Color::Yellow,
-							sf::Color::Blue
-						}
-					);
-
-					data.blocks.push_back(std::move(durableBlock));
-					break;
-				}
-
-				case BlockType::Glass:
-				{
-					auto glassBlock = std::make_unique<GlassBlock>();
-
-					glassBlock->Init(position, blockSize);
-
-					data.blocks.push_back(std::move(glassBlock));
-					break;
-				}
-
-				case BlockType::Regular:
-				default:
-				{
-					auto block = std::make_unique<Block>();
-
-					block->Init(position, blockSize);
-
-					data.blocks.push_back(std::move(block));
-					break;
-				}
-				}
+				BlockFactory& factory = *data.factories.at(blockTypes[blockIndex]);
+				data.blocks.push_back(factory.CreateBlock(position, blockSize));
 			}
+		}
+
+		for (const auto& item : data.factories)
+		{
+			data.breakableBlocksCount += item.second->GetCreatedBreakableBlocksCount();
 		}
 
 		assert(data.font.loadFromFile(SETTINGS.FONTS_PATH + "Roboto-Regular.ttf"));
@@ -191,18 +167,7 @@ namespace Arkanoid
 			}
 		}
 
-		bool allBlocksDestroyed = !data.blocks.empty();
-
-		for (const std::unique_ptr<Block>& block : data.blocks)
-		{
-			if (!block->IsDestroyed())
-			{
-				allBlocksDestroyed = false;
-				break;
-			}
-		}
-
-		if (allBlocksDestroyed)
+		if (data.breakableBlocksCount > 0 && data.score >= data.breakableBlocksCount)
 		{
 			Application::Instance().GetGame().SwitchStateTo(GameStateType::Victory);
 			return;

@@ -3,9 +3,11 @@
 #include "Paddle.h"
 #include "Ball.h"
 #include "Block.h"
+#include "BlockFactory.h"
 
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 namespace Arkanoid
 {
@@ -32,6 +34,15 @@ namespace Arkanoid
 		std::vector<std::unique_ptr<Block>> blocks;
 
 		int score = 0;
+		
+		//Blocks creator
+		std::unordered_map<BlockType, std::unique_ptr<BlockFactory>> factories;
+		int breakableBlocksCount = 0;
+		
+		//Levels
+		/*LevelLoader LevelLoader;
+		int currentLevel = 0;
+		*/
 	};
 
 	void InitGameStatePlaying(GameStatePlayingData& data);
