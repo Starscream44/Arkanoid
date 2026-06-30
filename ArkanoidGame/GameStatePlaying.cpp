@@ -19,8 +19,8 @@ namespace Arkanoid
 {
 	void InitGameStatePlaying(GameStatePlayingData& data)
 	{
-		data.paddle.Init(SCREEN_WIDTH, SCREEN_HEGHT);
-		data.ball.Init(SCREEN_WIDTH, SCREEN_HEGHT);
+		data.paddle.Init(SETTINGS.SCREEN_WIDTH, SETTINGS.SCREEN_HEGHT);
+		data.ball.Init(SETTINGS.SCREEN_WIDTH, SETTINGS.SCREEN_HEGHT);
 
 		data.score = 0;
 		data.blocks.clear();
@@ -41,7 +41,7 @@ namespace Arkanoid
 		const float spacingY = 8.f;
 
 		const float blockWidth =
-			(SCREEN_WIDTH - marginX * 2.f - spacingX * (columns - 1)) / columns;
+			(SETTINGS.SCREEN_WIDTH - marginX * 2.f - spacingX * (columns - 1)) / columns;
 
 		const sf::Vector2f blockSize = { blockWidth, 25.f };
 
@@ -138,7 +138,7 @@ namespace Arkanoid
 			}
 		}
 
-		assert(data.font.loadFromFile(FONTS_PATH + "Roboto-Regular.ttf"));
+		assert(data.font.loadFromFile(SETTINGS.FONTS_PATH + "Roboto-Regular.ttf"));
 
 		data.scoreText.setFont(data.font);
 		data.scoreText.setCharacterSize(24);

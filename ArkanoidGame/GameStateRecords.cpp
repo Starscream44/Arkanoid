@@ -10,14 +10,14 @@ namespace Arkanoid
 {
 	void InitGameStateRecords(GameStateRecordsData& data)
 	{
-		assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
+		assert(data.font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
 
 		data.titleText.setString("RECORDS");
 		data.titleText.setFont(data.font);
 		data.titleText.setFillColor(sf::Color::Red);
 		data.titleText.setCharacterSize(48);
 
-		data.tableTexts.reserve(MAX_RECORDS_TABLE_SIZE);
+		data.tableTexts.reserve(SETTINGS.MAX_RECORDS_TABLE_SIZE);
 
 		const Game& game = Application::Instance().GetGame();
 		std::map<int, std::string> sortedRecordsTable;
@@ -27,7 +27,7 @@ namespace Arkanoid
 		}
 
 		auto it = sortedRecordsTable.rbegin();
-		for (int i = 0; i < MAX_RECORDS_TABLE_SIZE && it != sortedRecordsTable.rend(); ++i, ++it) // Note, we can do several actions in for action block
+		for (int i = 0; i < SETTINGS.MAX_RECORDS_TABLE_SIZE && it != sortedRecordsTable.rend(); ++i, ++it) // Note, we can do several actions in for action block
 		{
 			data.tableTexts.emplace_back(); // Create text in place
 			sf::Text& text = data.tableTexts.back();

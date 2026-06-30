@@ -10,7 +10,7 @@ namespace Arkanoid
 {
 	void InitGameStateVictory(GameStateVictoryData& data)
 	{
-		assert(data.font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
+		assert(data.font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
 
 		data.background.setFillColor(sf::Color(0, 0, 0, 220));
 
