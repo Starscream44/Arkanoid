@@ -37,9 +37,8 @@ namespace Arkanoid
 		assert(levelIndex >= 0 && levelIndex < data.levelLoader.GetLevelsCount());
 
 		data.currentLevel = levelIndex;
-		data.breakableBlocksCount = 0;
-		data.destroyedBreakableBlocksCount = 0;
 		data.blocks.clear();
+		data.blocksObserver.Reset();
 		ResetBlockFactoryCounters(data);
 
 		data.paddle.Init(static_cast<float>(SETTINGS.SCREEN_WIDTH), static_cast<float>(SETTINGS.SCREEN_HEGHT));
@@ -71,12 +70,13 @@ namespace Arkanoid
 			};
 
 			BlockFactory& factory = *data.factories.at(blockData.blockType);
-			data.blocks.push_back(factory.CreateBlock(position, blockSize));
-		}
+			std::unique_ptr<Block> block = factory.CreateBlock(position, blockSize);
+			if (blockData.blockType != BlockType::Unbreakable)
+			{
+				data.blocksObserver.Observe(*block);
+			}
 
-		for (const auto& item : data.factories)
-		{
-			data.breakableBlocksCount += item.second->GetCreatedBreakableBlocksCount();
+			data.blocks.push_back(std::move(block));
 		}
 	}
 
@@ -134,14 +134,13 @@ namespace Arkanoid
 				if (block->IsDestroyed())
 				{
 					data.score += 1;
-					data.destroyedBreakableBlocksCount += 1;
 				}
 
 				break;
 			}
 		}
 
-		if (data.breakableBlocksCount > 0 && data.destroyedBreakableBlocksCount >= data.breakableBlocksCount)
+		if (data.blocksObserver.AreAllBlocksDestroyed())
 		{
 			const int nextLevel = data.currentLevel + 1;
 			if (nextLevel < data.levelLoader.GetLevelsCount())

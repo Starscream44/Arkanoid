@@ -1,5 +1,9 @@
 #include "Block.h"
 
+#include "BlockObserver.h"
+
+#include <algorithm>
+
 namespace Arkanoid
 {
 	void Block::Init(const sf::Vector2f& position, const sf::Vector2f& size)
@@ -49,11 +53,44 @@ namespace Arkanoid
 
 	void Block::Destroy()
 	{
+		if (isDestroyed)
+		{
+			return;
+		}
+
 		isDestroyed = true;
+		NotifyDestroyed();
 	}
 
 	bool Block::IsDestroyed() const
 	{
 		return isDestroyed;
+	}
+
+	void Block::AddObserver(IBlockObserver* observer)
+	{
+		if (observer == nullptr)
+		{
+			return;
+		}
+
+		if (std::find(observers.begin(), observers.end(), observer) == observers.end())
+		{
+			observers.push_back(observer);
+		}
+	}
+
+	void Block::RemoveObserver(IBlockObserver* observer)
+	{
+		auto it = std::remove(observers.begin(), observers.end(), observer);
+		observers.erase(it, observers.end());
+	}
+
+	void Block::NotifyDestroyed()
+	{
+		for (IBlockObserver* observer : observers)
+		{
+			observer->OnBlockDestroyed(*this);
+		}
 	}
 }

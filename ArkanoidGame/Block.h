@@ -5,8 +5,12 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <vector>
+
 namespace Arkanoid
 {
+	class IBlockObserver;
+
 	class Block : public GameObject, public Collidable
 	{
 	public:
@@ -24,12 +28,20 @@ namespace Arkanoid
 
 		void Destroy();
 		bool IsDestroyed() const;
+		void AddObserver(IBlockObserver* observer);
+		void RemoveObserver(IBlockObserver* observer);
 
 	protected:
 		void OnHit(Collidable& collidable) override;
 
+	private:
+		void NotifyDestroyed();
+
 	protected:
 		sf::RectangleShape shape;
 		bool isDestroyed = false;
+
+	private:
+		std::vector<IBlockObserver*> observers;
 	};
 }

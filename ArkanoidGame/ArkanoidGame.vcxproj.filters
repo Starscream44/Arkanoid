@@ -61,6 +61,9 @@
     <ClCompile Include="BlockFactory.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="BlocksDestroyObserver.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
     <ClCompile Include="UnbreakableBlock.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -119,6 +122,12 @@
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="BlockFactory.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockObserver.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="BlocksDestroyObserver.h">
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="UnbreakableBlock.h">

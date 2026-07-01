@@ -162,6 +162,7 @@
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BlockFactory.cpp" />
+    <ClCompile Include="BlocksDestroyObserver.cpp" />
     <ClCompile Include="DurableBlock.cpp" />
     <ClCompile Include="GameStateVictory.cpp" />
     <ClCompile Include="GlassBlock.cpp" />
@@ -184,6 +185,8 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BlockFactory.h" />
+    <ClInclude Include="BlockObserver.h" />
+    <ClInclude Include="BlocksDestroyObserver.h" />
     <ClInclude Include="Collidable.h" />
     <ClInclude Include="DurableBlock.h" />
     <ClInclude Include="GameObject.h" />

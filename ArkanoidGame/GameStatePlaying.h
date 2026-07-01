@@ -4,6 +4,7 @@
 #include "Ball.h"
 #include "Block.h"
 #include "BlockFactory.h"
+#include "BlocksDestroyObserver.h"
 #include "LevelLoader.h"
 
 #include <vector>
@@ -35,14 +36,13 @@ namespace Arkanoid
 		sf::Text inputHintText;
 		Paddle paddle;
 		Ball ball;
+		BlocksDestroyObserver blocksObserver;
 		std::vector<std::unique_ptr<Block>> blocks;
 
 		int score = 0;
 		
 		//Blocks creator
 		std::unordered_map<BlockType, std::unique_ptr<BlockFactory>> factories;
-		int breakableBlocksCount = 0;
-		int destroyedBreakableBlocksCount = 0;
 		
 		//Levels
 		LevelLoader levelLoader;
