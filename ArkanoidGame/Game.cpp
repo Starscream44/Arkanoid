@@ -188,6 +188,67 @@ namespace Arkanoid
 		Shutdown();
 	}
 
+	void Game::StartGame()
+	{
+		SwitchStateTo(GameStateType::Playing);
+	}
+
+	void Game::PauseGame()
+	{
+		PushState(GameStateType::ExitDialog, false);
+	}
+
+	void Game::ResumeGame()
+	{
+		PopState();
+	}
+
+	void Game::WinGame()
+	{
+		SwitchStateTo(GameStateType::Victory);
+	}
+
+	void Game::LoseGame()
+	{
+		SwitchStateTo(GameStateType::GameOver);
+	}
+
+	void Game::ExitGame()
+	{
+		SwitchStateTo(GameStateType::None);
+	}
+
+	void Game::ShowRecords()
+	{
+		PushState(GameStateType::Records, true);
+	}
+
+	void Game::ShowMainMenu()
+	{
+		SwitchStateTo(GameStateType::MainMenu);
+	}
+
+	void Game::UpdateGame(float timeDelta, sf::RenderWindow& window)
+	{
+		HandleWindowEvents(window);
+
+		if (!window.isOpen())
+		{
+			return;
+		}
+
+		if (Update(timeDelta))
+		{
+			window.clear();
+			Draw(window);
+			window.display();
+		}
+		else
+		{
+			window.close();
+		}
+	}
+
 	void Game::HandleWindowEvents(sf::RenderWindow& window)
 	{
 		sf::Event event;

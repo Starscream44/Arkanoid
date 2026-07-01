@@ -14,7 +14,13 @@ namespace Arkanoid
 		shape.setRadius(10.f);
 		shape.setFillColor(sf::Color::White);
 		shape.setOrigin(shape.getRadius(), shape.getRadius());
+		Restart();
+	}
+
+	void Ball::Restart()
+	{
 		shape.setPosition(fieldWidth * 0.5f, fieldHeight * 0.5f);
+		velocity = { 250.f, -250.f };
 	}
 
 	void Ball::Update(float timeDelta)

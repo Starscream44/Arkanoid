@@ -107,7 +107,7 @@ namespace Arkanoid
 		{
 			if (event.key.code == sf::Keyboard::Escape)
 			{
-				Application::Instance().GetGame().PushState(GameStateType::ExitDialog, false);
+				Application::Instance().GetGame().PauseGame();
 			}
 		}
 	}
@@ -150,7 +150,7 @@ namespace Arkanoid
 			}
 			else
 			{
-				Application::Instance().GetGame().SwitchStateTo(GameStateType::Victory);
+				Application::Instance().GetGame().WinGame();
 			}
 
 			return;

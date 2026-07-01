@@ -10,6 +10,7 @@ namespace Arkanoid
 	{
 	public:
 		void Init(float fieldWidth, float fieldHeight);
+		void Restart();
 		void Update(float timeDelta);
 		void Draw(sf::RenderWindow& window) const;
 

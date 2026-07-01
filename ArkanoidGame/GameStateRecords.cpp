@@ -58,7 +58,7 @@ namespace Arkanoid
 		{
 			if (event.key.code == sf::Keyboard::Escape)
 			{
-				Application::Instance().GetGame().PopState();
+				Application::Instance().GetGame().ResumeGame();
 			}
 		}
 	}

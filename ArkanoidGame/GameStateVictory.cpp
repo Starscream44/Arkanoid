@@ -30,7 +30,7 @@ namespace Arkanoid
 		yesItem.SetTextFont(data.font);
 		yesItem.SetTextCharacterSize(28);
 		yesItem.SetOnPressCallback([](MenuItem&) {
-			Application::Instance().GetGame().SwitchStateTo(GameStateType::Playing);
+			Application::Instance().GetGame().StartGame();
 			});
 
 		MenuItem noItem;
@@ -38,7 +38,7 @@ namespace Arkanoid
 		noItem.SetTextFont(data.font);
 		noItem.SetTextCharacterSize(28);
 		noItem.SetOnPressCallback([](MenuItem&) {
-			Application::Instance().GetGame().SwitchStateTo(GameStateType::MainMenu);
+			Application::Instance().GetGame().ShowMainMenu();
 			});
 
 		MenuItem victoryMenu;
@@ -72,7 +72,7 @@ namespace Arkanoid
 			}
 			else if (event.key.code == sf::Keyboard::Escape)
 			{
-				Application::Instance().GetGame().SwitchStateTo(GameStateType::MainMenu);
+				Application::Instance().GetGame().ShowMainMenu();
 			}
 		}
 	}

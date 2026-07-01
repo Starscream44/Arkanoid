@@ -73,10 +73,15 @@ namespace Arkanoid
 		Game();
 		~Game();
 
-		void HandleWindowEvents(sf::RenderWindow& window);
-		bool Update(float timeDelta); // Return false if game should be closed
-		void Draw(sf::RenderWindow& window);
-		void Shutdown();
+		void StartGame();
+		void PauseGame();
+		void ResumeGame();
+		void WinGame();
+		void LoseGame();
+		void ExitGame();
+		void ShowRecords();
+		void ShowMainMenu();
+		void UpdateGame(float timeDelta, sf::RenderWindow& window);
 
 		bool IsEnableOptions(GameOptions option) const;
 		void SetOption(GameOptions option, bool value);
@@ -84,6 +89,12 @@ namespace Arkanoid
 		const RecordsTable& GetRecordsTable() const { return recordsTable; }
 		int GetRecordByPlayerId(const std::string& playerId) const;
 		void UpdateRecord(const std::string& playerId, int score);
+
+	private:
+		void HandleWindowEvents(sf::RenderWindow& window);
+		bool Update(float timeDelta); // Return false if game should be closed
+		void Draw(sf::RenderWindow& window);
+		void Shutdown();
 
 		// Add new game state on top of the stack
 		void PushState(GameStateType stateType, bool isExclusivelyVisible);
@@ -94,8 +105,6 @@ namespace Arkanoid
 		// Remove all game states from the stack and add new one
 		void SwitchStateTo(GameStateType newState);
 
-		
-	private:
 		std::vector<GameState> stateStack;
 		GameStateChangeType stateChangeType = GameStateChangeType::None;
 		GameStateType pendingGameStateType = GameStateType::None;

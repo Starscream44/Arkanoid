@@ -21,7 +21,7 @@ namespace Arkanoid
 		resumeItem.SetTextFont(data.font);
 		resumeItem.SetTextCharacterSize(24);
 		resumeItem.SetOnPressCallback([](MenuItem&) {
-			Application::Instance().GetGame().PopState();
+			Application::Instance().GetGame().ResumeGame();
 			});
 
 		MenuItem exitItem;
@@ -29,7 +29,7 @@ namespace Arkanoid
 		exitItem.SetTextFont(data.font);
 		exitItem.SetTextCharacterSize(24);
 		exitItem.SetOnPressCallback([](MenuItem&) {
-			Application::Instance().GetGame().SwitchStateTo(GameStateType::MainMenu);
+			Application::Instance().GetGame().ShowMainMenu();
 			});
 
 		MenuItem pauseMenu;
@@ -51,7 +51,7 @@ namespace Arkanoid
 		{
 			if (event.key.code == sf::Keyboard::Escape)
 			{
-				Application::Instance().GetGame().PopState();
+				Application::Instance().GetGame().ResumeGame();
 			}
 
 			if (event.key.code == sf::Keyboard::Enter)
