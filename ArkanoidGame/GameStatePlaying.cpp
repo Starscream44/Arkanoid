@@ -213,6 +213,12 @@ namespace Arkanoid
 		data.blocks.clear();
 		data.blocksObserver.Reset();
 
+		data.hasLevelBackground = levelIndex < static_cast<int>(SETTINGS.LEVEL_BACKGROUND_PATHS.size());
+		if (data.hasLevelBackground)
+		{
+			InitMenuBackground(data.levelBackground, SETTINGS.LEVEL_BACKGROUND_PATHS[levelIndex], sf::Color(0, 0, 0, 70));
+		}
+
 		data.paddle.Init(static_cast<float>(SETTINGS.SCREEN_WIDTH), static_cast<float>(SETTINGS.SCREEN_HEIGHT));
 		data.ball.Init(static_cast<float>(SETTINGS.SCREEN_WIDTH), static_cast<float>(SETTINGS.SCREEN_HEIGHT));
 
@@ -368,6 +374,11 @@ namespace Arkanoid
 
 	void DrawGameStatePlaying(GameStatePlayingData& data, sf::RenderWindow& window)
 	{
+		if (data.hasLevelBackground)
+		{
+			DrawMenuBackground(data.levelBackground, window);
+		}
+
 		for (const std::unique_ptr<Block>& block : data.blocks)
 		{
 			block->Draw(window);

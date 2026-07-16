@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "MenuBackground.h"
 #include <vector>
 
 namespace Arkanoid
@@ -17,6 +18,7 @@ namespace Arkanoid
 	private:
 		// Resources
 		sf::Font font;
+		MenuBackground background;
 
 		sf::Text titleText;
 		std::vector<sf::Text> tableTexts;

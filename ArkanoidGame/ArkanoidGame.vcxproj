@@ -177,6 +177,7 @@
     <ClCompile Include="GameStateRecords.cpp" />
     <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="MenuBackground.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="UnbreakableBlock.cpp" />
   </ItemGroup>
@@ -203,6 +204,7 @@
     <ClInclude Include="GameStateRecords.h" />
     <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="MenuBackground.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="UnbreakableBlock.h" />
   </ItemGroup>

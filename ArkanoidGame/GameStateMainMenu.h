@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Menu.h"
+#include "MenuBackground.h"
 
 namespace Arkanoid
 {
@@ -17,6 +18,7 @@ namespace Arkanoid
 	private:
 		// Resources
 		sf::Font font;
+		MenuBackground background;
 
 		// UI data
 		Menu menu;

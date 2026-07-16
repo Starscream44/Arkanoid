@@ -8,6 +8,7 @@ namespace Arkanoid
 	void InitGameStateMainMenu(GameStateMainMenuData& data)
 	{
 		assert(data.font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
+		InitMenuBackground(data.background, SETTINGS.MAIN_MENU_BACKGROUND_PATH, sf::Color(0, 0, 0, 150));
 
 		MenuItem startGame;
 		startGame.SetTextString("Start Game");
@@ -54,10 +55,10 @@ namespace Arkanoid
 		exitGameItem.AddChild(noItem);
 
 		MenuItem mainMenu;
-		mainMenu.SetHintString("Arkanoid");
+		mainMenu.SetHintString("Void Bricks");
 		mainMenu.SetHintFont(data.font);
 		mainMenu.SetHintCharacterSize(48);
-		mainMenu.SetHintFillColor(sf::Color::Red);
+		mainMenu.SetHintFillColor(sf::Color(70, 220, 255));
 		mainMenu.SetChildrenLayout(Orientation::Vertical, Alignment::Middle, 10.f);
 		mainMenu.AddChild(startGame);
 		mainMenu.AddChild(recordsItem);
@@ -106,6 +107,8 @@ namespace Arkanoid
 	void DrawGameStateMainMenu(GameStateMainMenuData& data, sf::RenderWindow& window)
 	{
 		sf::Vector2f viewSize = (sf::Vector2f)window.getView().getSize();
+
+		DrawMenuBackground(data.background, window);
 
 		sf::Text hintText = data.menu.GetCurrentContext().GetHintText();
 		hintText.setOrigin(GetTextOrigin(hintText, { 0.5f, 0.f }));

@@ -12,6 +12,7 @@ namespace Arkanoid
 	void InitGameStateRecords(GameStateRecordsData& data)
 	{
 		assert(data.font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
+		InitMenuBackground(data.background, SETTINGS.MAIN_MENU_BACKGROUND_PATH, sf::Color(0, 0, 0, 175));
 
 		data.titleText.setString("RECORDS");
 		data.titleText.setFont(data.font);
@@ -72,6 +73,8 @@ namespace Arkanoid
 	void DrawGameStateRecords(GameStateRecordsData& data, sf::RenderWindow& window)
 	{
 		sf::Vector2f viewSize = window.getView().getSize();
+
+		DrawMenuBackground(data.background, window);
 
 		data.titleText.setOrigin(GetTextOrigin(data.titleText, { 0.5f, 0.f }));
 		data.titleText.setPosition(viewSize.x / 2.f, 50.f);

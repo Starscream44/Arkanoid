@@ -7,6 +7,7 @@
 #include "BlocksDestroyObserver.h"
 #include "Bonus.h"
 #include "LevelLoader.h"
+#include "MenuBackground.h"
 
 #include <vector>
 #include <memory>
@@ -43,6 +44,8 @@ namespace Arkanoid
 
 		sf::Text scoreText;
 		sf::Text inputHintText;
+		MenuBackground levelBackground;
+		bool hasLevelBackground = false;
 		Paddle paddle;
 		Ball ball;
 		BlocksDestroyObserver blocksObserver;

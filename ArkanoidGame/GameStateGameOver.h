@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "MenuBackground.h"
 #include <vector>
 
 namespace Arkanoid
@@ -21,7 +22,7 @@ namespace Arkanoid
 		float timeSinceGameOver = 0.f;
 
 		// UI data
-		sf::RectangleShape background;
+		MenuBackground background;
 		sf::Text gameOverText;
 		sf::Text hintText;
 		std::vector<sf::Text> recordsTableTexts;

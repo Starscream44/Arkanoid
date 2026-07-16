@@ -2,6 +2,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "Menu.h"
+#include "MenuBackground.h"
 
 namespace Arkanoid
 {
@@ -18,7 +19,7 @@ namespace Arkanoid
 	private:
 		sf::Font font;
 
-		sf::RectangleShape background;
+		MenuBackground background;
 		sf::Text titleText;
 		sf::Text hintText;
 

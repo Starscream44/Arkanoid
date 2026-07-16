@@ -13,7 +13,7 @@ namespace Arkanoid
 	{
 		assert(data.font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
 
-		data.background.setFillColor(sf::Color(0, 0, 0, 220));
+		InitMenuBackground(data.background, SETTINGS.MAIN_MENU_BACKGROUND_PATH, sf::Color(0, 0, 0, 180));
 
 		data.titleText.setFont(data.font);
 		data.titleText.setCharacterSize(48);
@@ -88,9 +88,7 @@ namespace Arkanoid
 	{
 		const sf::Vector2f viewSize = window.getView().getSize();
 
-		data.background.setSize(viewSize);
-		data.background.setPosition(0.f, 0.f);
-		window.draw(data.background);
+		DrawMenuBackground(data.background, window);
 
 		data.titleText.setOrigin(GetTextOrigin(data.titleText, { 0.5f, 0.f }));
 		data.titleText.setPosition(viewSize.x / 2.f, 110.f);

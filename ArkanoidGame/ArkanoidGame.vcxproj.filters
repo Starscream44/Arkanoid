@@ -70,6 +70,9 @@
     <ClCompile Include="LevelLoader.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="MenuBackground.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -134,6 +137,9 @@
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="LevelLoader.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuBackground.h">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>

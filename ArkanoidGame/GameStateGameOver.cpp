@@ -14,10 +14,7 @@ namespace Arkanoid
 		assert(data.font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
 
 		data.timeSinceGameOver = 0.f;
-
-		sf::Color backgroundColor = sf::Color::Black;
-		backgroundColor.a = 200; // a means Alfa, opacity
-		data.background.setFillColor(backgroundColor);
+		InitMenuBackground(data.background, SETTINGS.MAIN_MENU_BACKGROUND_PATH, sf::Color(0, 0, 0, 185));
 
 		data.gameOverText.setFont(data.font);
 		data.gameOverText.setCharacterSize(48);
@@ -58,7 +55,7 @@ namespace Arkanoid
 			}
 		}
 
-		// If snake is not in table, replace last element with him
+		// If player is not in table, replace last element with him
 		if (!isPlayerInTable)
 		{
 			sf::Text& text = data.recordsTableTexts.back();
@@ -108,9 +105,7 @@ namespace Arkanoid
 	{
 		sf::Vector2f viewSize = window.getView().getSize();
 
-		data.background.setOrigin(0.f, 0.f);
-		data.background.setSize(viewSize);
-		window.draw(data.background);
+		DrawMenuBackground(data.background, window);
 
 		data.gameOverText.setOrigin(GetTextOrigin(data.gameOverText, { 0.5f, 1.f }));
 		data.gameOverText.setPosition(viewSize.x / 2.f, viewSize.y / 2 - 50.f);
