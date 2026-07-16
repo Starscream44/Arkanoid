@@ -5,6 +5,7 @@
 #include "Block.h"
 #include "BlockFactory.h"
 #include "BlocksDestroyObserver.h"
+#include "Bonus.h"
 #include "LevelLoader.h"
 
 #include <vector>
@@ -23,21 +24,32 @@ namespace Arkanoid
 		friend void UpdateGameStatePlaying(GameStatePlayingData& data, float timeDelta);
 		friend void DrawGameStatePlaying(GameStatePlayingData& data, sf::RenderWindow& window);
 		friend void InitBlockFactories(GameStatePlayingData& data);
-		friend void ResetBlockFactoryCounters(GameStatePlayingData& data);
 		friend void LoadGameLevel(GameStatePlayingData& data, int levelIndex);
+		friend void SaveGameState(GameStatePlayingData& data);
+		friend bool LoadSavedGameState(GameStatePlayingData& data);
+		friend void ClearActiveBonusEffects(GameStatePlayingData& data);
+		friend void ApplyBonusEffect(GameStatePlayingData& data, std::unique_ptr<BonusEffect> effect);
+		friend void UpdateActiveBonusEffects(GameStatePlayingData& data, float timeDelta);
+		friend void UpdateBonuses(GameStatePlayingData& data, float timeDelta);
 
 	private:
+		struct ActiveBonusEffect
+		{
+			std::unique_ptr<BonusEffect> effect;
+			float remainingTime = 0.f;
+		};
+
 		sf::Font font;
 
-		sf::RectangleShape background;
-
-		sf::Text titleText;
 		sf::Text scoreText;
 		sf::Text inputHintText;
 		Paddle paddle;
 		Ball ball;
 		BlocksDestroyObserver blocksObserver;
 		std::vector<std::unique_ptr<Block>> blocks;
+		std::vector<std::unique_ptr<Bonus>> bonuses;
+		std::vector<ActiveBonusEffect> activeBonusEffects;
+		BonusFactory bonusFactory;
 
 		int score = 0;
 		

@@ -8,12 +8,192 @@
 #include "BlockFactory.h"
 
 #include <assert.h>
+#include <fstream>
 #include <memory>
+#include <sstream>
 #include <string>
 
 
 namespace Arkanoid
 {
+	void ClearActiveBonusEffects(GameStatePlayingData& data)
+	{
+		for (auto& activeEffect : data.activeBonusEffects)
+		{
+			activeEffect.effect->Revert(data.paddle, data.ball);
+		}
+
+		data.activeBonusEffects.clear();
+		data.bonuses.clear();
+		data.paddle.ResetModifiers();
+		data.ball.ResetModifiers();
+	}
+
+	void ApplyBonusEffect(GameStatePlayingData& data, std::unique_ptr<BonusEffect> effect)
+	{
+		const std::string effectName = effect->GetName();
+
+		for (auto it = data.activeBonusEffects.begin(); it != data.activeBonusEffects.end();)
+		{
+			if (it->effect->GetName() == effectName)
+			{
+				it->effect->Revert(data.paddle, data.ball);
+				it = data.activeBonusEffects.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+		effect->Apply(data.paddle, data.ball);
+
+		GameStatePlayingData::ActiveBonusEffect activeEffect;
+		activeEffect.remainingTime = effect->GetDuration();
+		activeEffect.effect = std::move(effect);
+		data.activeBonusEffects.push_back(std::move(activeEffect));
+	}
+
+	void UpdateActiveBonusEffects(GameStatePlayingData& data, float timeDelta)
+	{
+		for (auto it = data.activeBonusEffects.begin(); it != data.activeBonusEffects.end();)
+		{
+			it->remainingTime -= timeDelta;
+			if (it->remainingTime <= 0.f)
+			{
+				it->effect->Revert(data.paddle, data.ball);
+				it = data.activeBonusEffects.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
+	}
+
+	void UpdateBonuses(GameStatePlayingData& data, float timeDelta)
+	{
+		for (auto& bonus : data.bonuses)
+		{
+			bonus->Update(timeDelta);
+		}
+
+		for (auto it = data.bonuses.begin(); it != data.bonuses.end();)
+		{
+			if ((*it)->IsCollected(data.paddle))
+			{
+				ApplyBonusEffect(data, (*it)->TakeEffect());
+				it = data.bonuses.erase(it);
+			}
+			else if ((*it)->IsMissed(static_cast<float>(SETTINGS.SCREEN_HEIGHT)))
+			{
+				it = data.bonuses.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
+	}
+
+	void SaveGameState(GameStatePlayingData& data)
+	{
+		std::ofstream file(SETTINGS.SAVE_FILE_PATH);
+		if (!file.is_open())
+		{
+			return;
+		}
+
+		const sf::Vector2f paddlePosition = data.paddle.GetPosition();
+		const sf::Vector2f ballPosition = data.ball.GetPosition();
+		const sf::Vector2f ballVelocity = data.ball.GetVelocity();
+
+		file << "level " << data.currentLevel << '\n';
+		file << "score " << data.score << '\n';
+		file << "paddle " << paddlePosition.x << ' ' << paddlePosition.y << '\n';
+		file << "ball " << ballPosition.x << ' ' << ballPosition.y << ' ' << ballVelocity.x << ' ' << ballVelocity.y << '\n';
+
+		file << "destroyed";
+		for (size_t i = 0; i < data.blocks.size(); ++i)
+		{
+			if (data.blocks[i]->IsDestroyed())
+			{
+				file << ' ' << i;
+			}
+		}
+		file << '\n';
+	}
+
+	bool LoadSavedGameState(GameStatePlayingData& data)
+	{
+		std::ifstream file(SETTINGS.SAVE_FILE_PATH);
+		if (!file.is_open())
+		{
+			return false;
+		}
+
+		int loadedLevel = 0;
+		int loadedScore = 0;
+		sf::Vector2f paddlePosition;
+		sf::Vector2f ballPosition;
+		sf::Vector2f ballVelocity;
+		std::vector<size_t> destroyedBlocks;
+		std::string label;
+
+		if (!(file >> label >> loadedLevel) || label != "level")
+		{
+			return false;
+		}
+		if (!(file >> label >> loadedScore) || label != "score")
+		{
+			return false;
+		}
+		if (!(file >> label >> paddlePosition.x >> paddlePosition.y) || label != "paddle")
+		{
+			return false;
+		}
+		if (!(file >> label >> ballPosition.x >> ballPosition.y >> ballVelocity.x >> ballVelocity.y) || label != "ball")
+		{
+			return false;
+		}
+		if (!(file >> label) || label != "destroyed")
+		{
+			return false;
+		}
+
+		std::string destroyedLine;
+		std::getline(file, destroyedLine);
+		std::stringstream destroyedStream(destroyedLine);
+		size_t blockIndex = 0;
+		while (destroyedStream >> blockIndex)
+		{
+			destroyedBlocks.push_back(blockIndex);
+		}
+
+		if (loadedLevel < 0 || loadedLevel >= data.levelLoader.GetLevelsCount())
+		{
+			return false;
+		}
+
+		ClearActiveBonusEffects(data);
+		LoadGameLevel(data, loadedLevel);
+
+		data.score = loadedScore;
+		data.paddle.SetPosition(paddlePosition);
+		data.ball.SetPosition(ballPosition);
+		data.ball.SetVelocity(ballVelocity);
+
+		for (size_t index : destroyedBlocks)
+		{
+			if (index < data.blocks.size() && !data.blocks[index]->IsDestroyed())
+			{
+				data.blocks[index]->Destroy();
+			}
+		}
+
+		return true;
+	}
+
 	void InitBlockFactories(GameStatePlayingData& data)
 	{
 		data.factories.clear();
@@ -24,25 +204,17 @@ namespace Arkanoid
 		data.factories.emplace(BlockType::Unbreakable, std::make_unique<UnbreakableBlockFactory>());
 	}
 
-	void ResetBlockFactoryCounters(GameStatePlayingData& data)
-	{
-		for (auto& item : data.factories)
-		{
-			item.second->ClearCounter();
-		}
-	}
-
 	void LoadGameLevel(GameStatePlayingData& data, int levelIndex)
 	{
 		assert(levelIndex >= 0 && levelIndex < data.levelLoader.GetLevelsCount());
 
+		ClearActiveBonusEffects(data);
 		data.currentLevel = levelIndex;
 		data.blocks.clear();
 		data.blocksObserver.Reset();
-		ResetBlockFactoryCounters(data);
 
-		data.paddle.Init(static_cast<float>(SETTINGS.SCREEN_WIDTH), static_cast<float>(SETTINGS.SCREEN_HEGHT));
-		data.ball.Init(static_cast<float>(SETTINGS.SCREEN_WIDTH), static_cast<float>(SETTINGS.SCREEN_HEGHT));
+		data.paddle.Init(static_cast<float>(SETTINGS.SCREEN_WIDTH), static_cast<float>(SETTINGS.SCREEN_HEIGHT));
+		data.ball.Init(static_cast<float>(SETTINGS.SCREEN_WIDTH), static_cast<float>(SETTINGS.SCREEN_HEIGHT));
 
 		const LevelData& level = data.levelLoader.GetLevel(levelIndex);
 
@@ -94,10 +266,17 @@ namespace Arkanoid
 		data.scoreText.setFillColor(sf::Color::White);
 		data.scoreText.setPosition(20.f, 20.f);
 		data.scoreText.setString("Score: " + std::to_string(data.score));
+
+		data.inputHintText.setFont(data.font);
+		data.inputHintText.setCharacterSize(18);
+		data.inputHintText.setFillColor(sf::Color(180, 180, 180));
+		data.inputHintText.setPosition(20.f, 50.f);
+		data.inputHintText.setString("F5: save  F9: load  Esc: pause");
 	}
 
 	void ShutdownGameStatePlaying(GameStatePlayingData& data)
 	{
+		ClearActiveBonusEffects(data);
 		data.blocks.clear();
 	}
 
@@ -109,6 +288,14 @@ namespace Arkanoid
 			{
 				Application::Instance().GetGame().PauseGame();
 			}
+			else if (event.key.code == sf::Keyboard::F5)
+			{
+				SaveGameState(data);
+			}
+			else if (event.key.code == sf::Keyboard::F9)
+			{
+				LoadSavedGameState(data);
+			}
 		}
 	}
 
@@ -117,8 +304,18 @@ namespace Arkanoid
 		data.paddle.Update(timeDelta);
 
 		data.ball.Update(timeDelta);
+		UpdateActiveBonusEffects(data, timeDelta);
+		UpdateBonuses(data, timeDelta);
 
 		data.ball.CheckCollision(data.paddle);
+
+		if (data.ball.IsBelowField())
+		{
+			Game& game = Application::Instance().GetGame();
+			game.UpdateRecord(SETTINGS.PLAYER_NAME, data.score);
+			game.LoseGame();
+			return;
+		}
 
 		for (std::unique_ptr<Block>& block : data.blocks)
 		{
@@ -133,7 +330,16 @@ namespace Arkanoid
 			{
 				if (block->IsDestroyed())
 				{
-					data.score += 1;
+					data.score += block->GetScorePoints();
+
+					if (data.bonusFactory.ShouldSpawnBonus())
+					{
+						const sf::FloatRect blockBounds = block->GetBounds();
+						data.bonuses.push_back(data.bonusFactory.CreateRandomBonus({
+							blockBounds.left + blockBounds.width * 0.5f,
+							blockBounds.top + blockBounds.height * 0.5f
+						}));
+					}
 				}
 
 				break;
@@ -149,7 +355,9 @@ namespace Arkanoid
 			}
 			else
 			{
-				Application::Instance().GetGame().WinGame();
+				Game& game = Application::Instance().GetGame();
+				game.UpdateRecord(SETTINGS.PLAYER_NAME, data.score);
+				game.WinGame();
 			}
 
 			return;
@@ -160,16 +368,20 @@ namespace Arkanoid
 
 	void DrawGameStatePlaying(GameStatePlayingData& data, sf::RenderWindow& window)
 	{
-		window.draw(data.background);
-
 		for (const std::unique_ptr<Block>& block : data.blocks)
 		{
 			block->Draw(window);
+		}
+
+		for (const std::unique_ptr<Bonus>& bonus : data.bonuses)
+		{
+			bonus->Draw(window);
 		}
 
 		data.paddle.Draw(window);
 		data.ball.Draw(window);
 
 		window.draw(data.scoreText);
+		window.draw(data.inputHintText);
 	}
 }

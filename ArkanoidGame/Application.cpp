@@ -10,7 +10,7 @@ namespace Arkanoid
 	}
 
 	Application::Application() :
-		window(sf::VideoMode(SETTINGS.SCREEN_WIDTH, SETTINGS.SCREEN_HEGHT), SETTINGS.GAME_NAME)
+		window(sf::VideoMode(SETTINGS.SCREEN_WIDTH, SETTINGS.SCREEN_HEIGHT), SETTINGS.GAME_NAME)
 	{
 		// Init random number generator
 		unsigned int seed = (unsigned int)time(nullptr); // Get current time as seed. You can also use any other number to fix randomization

@@ -21,6 +21,11 @@ namespace Arkanoid
 		UpdateColor();
 	}
 
+	int DurableBlock::GetScorePoints() const
+	{
+		return 30;
+	}
+
 	void DurableBlock::OnHit(Collidable& collidable)
 	{
 		if (isDestroyed)

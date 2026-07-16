@@ -15,6 +15,7 @@ namespace Arkanoid
 			int hitPoints,
 			const std::vector<sf::Color>& damageColors
 		);
+		int GetScorePoints() const override;
 
 	protected:
 		void OnHit(Collidable& collidable) override;

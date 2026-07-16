@@ -3,12 +3,12 @@
 #include "Game.h"
 #include "Text.h"
 #include <assert.h>
+#include <map>
 #include <sstream>
+#include <string>
 
 namespace Arkanoid
 {
-	const char* PLAYER_NAME = "Player";
-
 	void InitGameStateGameOver(GameStateGameOverData& data)
 	{
 		assert(data.font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
@@ -34,7 +34,7 @@ namespace Arkanoid
 			sortedRecordsTable.insert(std::make_pair(item.second, item.first));
 		}
 
-		bool isSnakeInTable = false;
+		bool isPlayerInTable = false;
 		auto it = sortedRecordsTable.rbegin();
 		for (int i = 0; i < SETTINGS.MAX_RECORDS_TABLE_SIZE && it != sortedRecordsTable.rend(); ++i, ++it) // Note, we can do several actions in for action block
 		{
@@ -47,10 +47,10 @@ namespace Arkanoid
 			text.setString(sstream.str());
 			text.setFont(data.font);
 			text.setCharacterSize(24);
-			if (it->second == PLAYER_NAME)
+			if (it->second == SETTINGS.PLAYER_NAME)
 			{
 				text.setFillColor(sf::Color::Green);
-				isSnakeInTable = true;
+				isPlayerInTable = true;
 			}
 			else
 			{
@@ -59,12 +59,12 @@ namespace Arkanoid
 		}
 
 		// If snake is not in table, replace last element with him
-		if (!isSnakeInTable)
+		if (!isPlayerInTable)
 		{
 			sf::Text& text = data.recordsTableTexts.back();
 			std::stringstream sstream;
-			int snakeScores = game.GetRecordByPlayerId(PLAYER_NAME);
-			sstream << SETTINGS.MAX_RECORDS_TABLE_SIZE << ". " << PLAYER_NAME << ": " << snakeScores;
+			int playerScore = game.GetRecordByPlayerId(SETTINGS.PLAYER_NAME);
+			sstream << SETTINGS.MAX_RECORDS_TABLE_SIZE << ". " << SETTINGS.PLAYER_NAME << ": " << playerScore;
 			text.setString(sstream.str());
 			text.setFillColor(sf::Color::Green);
 		}
@@ -72,7 +72,7 @@ namespace Arkanoid
 		data.hintText.setFont(data.font);
 		data.hintText.setCharacterSize(24);
 		data.hintText.setFillColor(sf::Color::White);
-		data.hintText.setString("Press Space to restart\nEsc to exit to main menu");
+		data.hintText.setString("Score: " + std::to_string(game.GetLastScore()) + "\nPress Space to restart\nEsc to exit to main menu");
 	}
 
 	void ShutdownGameStateGameOver(GameStateGameOverData& data)

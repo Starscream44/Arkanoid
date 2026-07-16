@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{C3A962DD-12D8-4E72-99F3-C940EF572498}</ProjectGuid>
-    <RootNamespace>SnakeGame</RootNamespace>
+    <RootNamespace>ArkanoidGame</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>ArkanoidGame</ProjectName>
   </PropertyGroup>
@@ -163,11 +163,11 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BlockFactory.cpp" />
     <ClCompile Include="BlocksDestroyObserver.cpp" />
+    <ClCompile Include="Bonus.cpp" />
     <ClCompile Include="DurableBlock.cpp" />
     <ClCompile Include="GameStateVictory.cpp" />
     <ClCompile Include="GlassBlock.cpp" />
     <ClCompile Include="Paddle.cpp" />
-    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="GameStatePauseMenu.cpp" />
@@ -187,13 +187,13 @@
     <ClInclude Include="BlockFactory.h" />
     <ClInclude Include="BlockObserver.h" />
     <ClInclude Include="BlocksDestroyObserver.h" />
+    <ClInclude Include="Bonus.h" />
     <ClInclude Include="Collidable.h" />
     <ClInclude Include="DurableBlock.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameStateVictory.h" />
     <ClInclude Include="GlassBlock.h" />
     <ClInclude Include="Paddle.h" />
-    <ClInclude Include="Sprite.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="GameStatePauseMenu.h" />
@@ -205,8 +205,6 @@
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="UnbreakableBlock.h" />
-    <ClInclude Include="Snake.h" />
-    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

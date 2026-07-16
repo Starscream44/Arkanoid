@@ -7,6 +7,7 @@
 #include "GameStateMainMenu.h"
 #include "GameStateVictory.h"
 #include "GameStateRecords.h"
+#include <fstream>
 
 namespace Arkanoid
 {
@@ -167,15 +168,7 @@ namespace Arkanoid
 
 	Game::Game()
 	{
-		// Generate fake records table
-		recordsTable =
-		{
-			{"John", SETTINGS.MAX_APPLES / 2},
-			{"Jane", SETTINGS.MAX_APPLES / 3 },
-			{"Alice", SETTINGS.MAX_APPLES / 4 },
-			{"Bob", SETTINGS.MAX_APPLES / 5 },
-			{"Clementine", SETTINGS.MAX_APPLES / 5 },
-		};
+		LoadRecords();
 
 		stateChangeType = GameStateChangeType::None;
 		pendingGameStateType = GameStateType::None;
@@ -358,22 +351,6 @@ namespace Arkanoid
 		stateChangeType = GameStateChangeType::Switch;
 	}
 
-	bool Game::IsEnableOptions(GameOptions option) const
-	{
-		const bool isEnable = ((std::uint8_t)options & (std::uint8_t)option) != (std::uint8_t)GameOptions::Empty;
-		return isEnable;
-	}
-
-	void Game::SetOption(GameOptions option, bool value)
-	{
-		if (value) {
-			options = (GameOptions)((std::uint8_t)options | (std::uint8_t)option);
-		}
-		else {
-			options = (GameOptions)((std::uint8_t)options & ~(std::uint8_t)option);
-		}
-	}
-
 	int Game::GetRecordByPlayerId(const std::string& playerId) const
 	{
 		auto it = recordsTable.find(playerId);
@@ -382,7 +359,53 @@ namespace Arkanoid
 
 	void Game::UpdateRecord(const std::string& playerId, int score)
 	{
+		lastScore = score;
 		recordsTable[playerId] = std::max(recordsTable[playerId], score);
+		SaveRecords();
+	}
+
+	void Game::LoadRecords()
+	{
+		recordsTable.clear();
+
+		std::ifstream file(SETTINGS.RECORDS_FILE_PATH);
+		if (file.is_open())
+		{
+			std::string playerId;
+			int score = 0;
+			while (file >> playerId >> score)
+			{
+				recordsTable[playerId] = score;
+			}
+		}
+
+		if (!recordsTable.empty())
+		{
+			return;
+		}
+
+		recordsTable =
+		{
+			{"John", 120},
+			{"Jane", 90},
+			{"Alice", 60},
+			{"Bob", 40},
+			{"Clementine", 30},
+		};
+	}
+
+	void Game::SaveRecords() const
+	{
+		std::ofstream file(SETTINGS.RECORDS_FILE_PATH);
+		if (!file.is_open())
+		{
+			return;
+		}
+
+		for (const auto& item : recordsTable)
+		{
+			file << item.first << ' ' << item.second << '\n';
+		}
 	}
 
 	void HandleWindowEventGameState(GameState& state, sf::Event& event)

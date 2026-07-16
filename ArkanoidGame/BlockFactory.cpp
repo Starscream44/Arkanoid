@@ -7,20 +7,8 @@
 
 namespace Arkanoid
 {
-	int BlockFactory::GetCreatedBreakableBlocksCount() const
-	{
-		return createdBreakableBlocksCount;
-	}
-
-	void BlockFactory::ClearCounter()
-	{
-		createdBreakableBlocksCount = 0;
-	}
-
 	std::unique_ptr<Block> RegularBlockFactory::CreateBlock(const sf::Vector2f& position, const sf::Vector2f& size)
 	{
-		++createdBreakableBlocksCount;
-
 		auto block = std::make_unique<Block>();
 		block->Init(position, size);
 		return block;
@@ -28,8 +16,6 @@ namespace Arkanoid
 
 	std::unique_ptr<Block> ThreeHitBlockFactory::CreateBlock(const sf::Vector2f& position, const sf::Vector2f& size)
 	{
-		++createdBreakableBlocksCount;
-
 		auto block = std::make_unique<DurableBlock>();
 		block->Init(
 			position,
@@ -47,8 +33,6 @@ namespace Arkanoid
 
 	std::unique_ptr<Block> GlassBlockFactory::CreateBlock(const sf::Vector2f& position, const sf::Vector2f& size)
 	{
-		++createdBreakableBlocksCount;
-
 		auto block = std::make_unique<GlassBlock>();
 		block->Init(position, size);
 		return block;

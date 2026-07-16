@@ -21,6 +21,7 @@ namespace Arkanoid
 	{
 		shape.setPosition(fieldWidth * 0.5f, fieldHeight * 0.5f);
 		velocity = { 250.f, -250.f };
+		speedMultiplier = 1.f;
 	}
 
 	void Ball::Update(float timeDelta)
@@ -38,6 +39,47 @@ namespace Arkanoid
 	sf::FloatRect Ball::GetBounds() const
 	{
 		return shape.getGlobalBounds();
+	}
+
+	sf::Vector2f Ball::GetPosition() const
+	{
+		return shape.getPosition();
+	}
+
+	sf::Vector2f Ball::GetVelocity() const
+	{
+		return velocity;
+	}
+
+	void Ball::SetPosition(const sf::Vector2f& position)
+	{
+		shape.setPosition(position);
+	}
+
+	void Ball::SetVelocity(const sf::Vector2f& newVelocity)
+	{
+		velocity = newVelocity;
+	}
+
+	void Ball::SetSpeedMultiplier(float multiplier)
+	{
+		if (speedMultiplier != 0.f)
+		{
+			velocity /= speedMultiplier;
+		}
+
+		speedMultiplier = multiplier;
+		velocity *= speedMultiplier;
+	}
+
+	void Ball::ResetModifiers()
+	{
+		SetSpeedMultiplier(1.f);
+	}
+
+	bool Ball::IsBelowField() const
+	{
+		return GetBounds().top > fieldHeight;
 	}
 
 	void Ball::OnHit(Collidable& collidable)
@@ -76,12 +118,6 @@ namespace Arkanoid
 			position.y = radius;
 			velocity.y = -velocity.y;
 		}
-		else if (position.y + radius >= fieldHeight && velocity.y > 0.f)
-		{
-			position.y = fieldHeight - radius;
-			velocity.y = -velocity.y;
-		}
-
 		shape.setPosition(position);
 	}
 

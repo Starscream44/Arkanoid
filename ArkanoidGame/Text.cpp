@@ -1,5 +1,7 @@
 #include "Text.h"
 
+#include <algorithm>
+
 namespace Arkanoid
 {
 	sf::Vector2f GetTextOrigin(const sf::Text& text, const sf::Vector2f& relativePosition)

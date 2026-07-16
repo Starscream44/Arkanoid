@@ -22,12 +22,6 @@ namespace Arkanoid
 		virtual ~BlockFactory() = default;
 
 		virtual std::unique_ptr<Block> CreateBlock(const sf::Vector2f& position, const sf::Vector2f& size) = 0;
-
-		int GetCreatedBreakableBlocksCount() const;
-		void ClearCounter();
-
-	protected:
-		int createdBreakableBlocksCount = 0;
 	};
 
 	class RegularBlockFactory final : public BlockFactory

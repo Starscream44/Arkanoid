@@ -8,7 +8,11 @@ namespace Arkanoid
 		fieldWidth = newFieldWidth;
 		fieldHeight = newFieldHeight;
 
-		shape.setSize(sf::Vector2f(140.f, 20.f));
+		baseWidth = 140.f;
+		baseSpeed = 600.f;
+		speed = baseSpeed;
+
+		shape.setSize(sf::Vector2f(baseWidth, 20.f));
 		shape.setFillColor(sf::Color::Green);
 
 		shape.setOrigin(shape.getSize().x * 0.5f, shape.getSize().y * 0.5f);
@@ -42,6 +46,37 @@ namespace Arkanoid
 	sf::FloatRect Paddle::GetBounds() const
 	{
 		return shape.getGlobalBounds();
+	}
+
+	sf::Vector2f Paddle::GetPosition() const
+	{
+		return shape.getPosition();
+	}
+
+	void Paddle::SetPosition(const sf::Vector2f& position)
+	{
+		shape.setPosition(position);
+		ClampInsideField();
+	}
+
+	void Paddle::SetWidthMultiplier(float multiplier)
+	{
+		sf::Vector2f size = shape.getSize();
+		size.x = baseWidth * multiplier;
+		shape.setSize(size);
+		shape.setOrigin(shape.getSize().x * 0.5f, shape.getSize().y * 0.5f);
+		ClampInsideField();
+	}
+
+	void Paddle::SetSpeedMultiplier(float multiplier)
+	{
+		speed = baseSpeed * multiplier;
+	}
+
+	void Paddle::ResetModifiers()
+	{
+		SetWidthMultiplier(1.f);
+		SetSpeedMultiplier(1.f);
 	}
 
 	void Paddle::OnHit(Collidable& collidable)

@@ -6,14 +6,19 @@ namespace Arkanoid
 	{
 		Block::Init(position, size);
 
-		shape.setFillColor(sf::Color(255, 255, 255, 100));
-		shape.setOutlineColor(sf::Color::White);
+		shape.setFillColor(sf::Color(120, 220, 255, 45));
+		shape.setOutlineColor(sf::Color(170, 240, 255, 180));
 		shape.setOutlineThickness(2.f);
 	}
 
 	bool GlassBlock::ShouldBounceBall() const
 	{
 		return false;
+	}
+
+	int GlassBlock::GetScorePoints() const
+	{
+		return 20;
 	}
 
 	void GlassBlock::OnHit(Collidable& collidable)

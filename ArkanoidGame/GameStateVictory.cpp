@@ -5,6 +5,7 @@
 #include "Text.h"
 
 #include <assert.h>
+#include <string>
 
 namespace Arkanoid
 {
@@ -23,7 +24,8 @@ namespace Arkanoid
 		data.hintText.setFont(data.font);
 		data.hintText.setCharacterSize(26);
 		data.hintText.setFillColor(sf::Color::White);
-		data.hintText.setString("Congratulations!\nYou destroyed all blocks.\n\nPlay again?");
+		const Game& game = Application::Instance().GetGame();
+		data.hintText.setString("Congratulations!\nYou destroyed all blocks.\nScore: " + std::to_string(game.GetLastScore()) + "\n\nPlay again?");
 
 		MenuItem yesItem;
 		yesItem.SetTextString("Yes");

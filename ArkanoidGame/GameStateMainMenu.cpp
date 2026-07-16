@@ -17,42 +17,6 @@ namespace Arkanoid
 			Application::Instance().GetGame().StartGame();
 			});
 
-		const bool isInfiniteApples = Application::Instance().GetGame().IsEnableOptions(GameOptions::InfiniteApples);
-		MenuItem optionsInfiniteApplesItem;
-		optionsInfiniteApplesItem.SetTextString("Infinite Apples: " + std::string(isInfiniteApples ? "On" : "Off"));
-		optionsInfiniteApplesItem.SetTextFont(data.font);
-		optionsInfiniteApplesItem.SetTextCharacterSize(24);
-		optionsInfiniteApplesItem.SetOnPressCallback([](MenuItem& item) {
-			Game& game = Application::Instance().GetGame();
-			bool newOptionValue = !game.IsEnableOptions(GameOptions::InfiniteApples);
-			game.SetOption(GameOptions::InfiniteApples, newOptionValue);
-			item.SetTextString("Infinite Apples: " + std::string(newOptionValue ? "On" : "Off"));
-			});
-
-		const bool isWithAcceleration = Application::Instance().GetGame().IsEnableOptions(GameOptions::WithAcceleration);
-		MenuItem optionsWithAccelerationItem;
-		optionsWithAccelerationItem.SetTextString("With Acceleration: " + std::string(isWithAcceleration ? "On" : "Off"));
-		optionsWithAccelerationItem.SetTextFont(data.font);
-		optionsWithAccelerationItem.SetTextCharacterSize(24);
-		optionsWithAccelerationItem.SetOnPressCallback([](MenuItem& item) {
-			Game& game = Application::Instance().GetGame();
-			bool newOptionValue = !game.IsEnableOptions(GameOptions::WithAcceleration);
-			game.SetOption(GameOptions::WithAcceleration, newOptionValue);
-			item.SetTextString("With Acceleration: " + std::string(newOptionValue ? "On" : "Off"));
-			});
-
-		MenuItem options;
-		options.SetTextString("Options");
-		options.SetTextFont(data.font);
-		options.SetTextCharacterSize(24);
-		options.SetHintString("Options");
-		options.SetHintFont(data.font);
-		options.SetHintCharacterSize(48);
-		options.SetHintFillColor(sf::Color::Red);
-		options.SetChildrenLayout(Orientation::Vertical, Alignment::Middle, 10.f);
-		options.AddChild(optionsInfiniteApplesItem);
-		options.AddChild(optionsWithAccelerationItem);
-
 		MenuItem recordsItem;
 		recordsItem.SetTextString("Records");
 		recordsItem.SetTextFont(data.font);
@@ -96,7 +60,6 @@ namespace Arkanoid
 		mainMenu.SetHintFillColor(sf::Color::Red);
 		mainMenu.SetChildrenLayout(Orientation::Vertical, Alignment::Middle, 10.f);
 		mainMenu.AddChild(startGame);
-		mainMenu.AddChild(options);
 		mainMenu.AddChild(recordsItem);
 		mainMenu.AddChild(exitGameItem);
 

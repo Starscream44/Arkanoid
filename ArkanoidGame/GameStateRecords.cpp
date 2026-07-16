@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "GameSettings.h"
 #include <assert.h>
+#include <map>
 #include <sstream>
 
 namespace Arkanoid
@@ -20,10 +21,10 @@ namespace Arkanoid
 		data.tableTexts.reserve(SETTINGS.MAX_RECORDS_TABLE_SIZE);
 
 		const Game& game = Application::Instance().GetGame();
-		std::map<int, std::string> sortedRecordsTable;
+		std::multimap<int, std::string> sortedRecordsTable;
 		for (const auto& item : game.GetRecordsTable())
 		{
-			sortedRecordsTable[item.second] = item.first;
+			sortedRecordsTable.insert(std::make_pair(item.second, item.first));
 		}
 
 		auto it = sortedRecordsTable.rbegin();

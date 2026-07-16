@@ -25,9 +25,11 @@ namespace Arkanoid
 		bool GetCollision(const Collidable& collidable) const override;
 
 		virtual bool ShouldBounceBall() const;
+		virtual int GetScorePoints() const;
 
 		void Destroy();
 		bool IsDestroyed() const;
+		void RestoreDestroyedState(bool destroyed);
 		void AddObserver(IBlockObserver* observer);
 		void RemoveObserver(IBlockObserver* observer);
 

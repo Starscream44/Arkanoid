@@ -45,6 +45,11 @@ namespace Arkanoid
 		return true;
 	}
 
+	int Block::GetScorePoints() const
+	{
+		return 10;
+	}
+
 	void Block::OnHit(Collidable& collidable)
 	{
 		Destroy();
@@ -65,6 +70,11 @@ namespace Arkanoid
 	bool Block::IsDestroyed() const
 	{
 		return isDestroyed;
+	}
+
+	void Block::RestoreDestroyedState(bool destroyed)
+	{
+		isDestroyed = destroyed;
 	}
 
 	void Block::AddObserver(IBlockObserver* observer)

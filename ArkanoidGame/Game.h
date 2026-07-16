@@ -1,21 +1,14 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-#include "Sprite.h"
 #include "GameSettings.h"
+
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace Arkanoid
 {
-	enum class GameOptions: std::uint8_t
-	{
-		InfiniteApples = 1 << 0,
-		WithAcceleration = 1 << 1,
-
-		Default = InfiniteApples | WithAcceleration,
-		Empty = 0
-	};
-
 	enum class GameStateType
 	{
 		None = 0,
@@ -83,14 +76,15 @@ namespace Arkanoid
 		void ShowMainMenu();
 		void UpdateGame(float timeDelta, sf::RenderWindow& window);
 
-		bool IsEnableOptions(GameOptions option) const;
-		void SetOption(GameOptions option, bool value);
-
 		const RecordsTable& GetRecordsTable() const { return recordsTable; }
 		int GetRecordByPlayerId(const std::string& playerId) const;
+		int GetLastScore() const { return lastScore; }
 		void UpdateRecord(const std::string& playerId, int score);
 
 	private:
+		void LoadRecords();
+		void SaveRecords() const;
+
 		void HandleWindowEvents(sf::RenderWindow& window);
 		bool Update(float timeDelta); // Return false if game should be closed
 		void Draw(sf::RenderWindow& window);
@@ -110,8 +104,8 @@ namespace Arkanoid
 		GameStateType pendingGameStateType = GameStateType::None;
 		bool pendingGameStateIsExclusivelyVisible = false;
 
-		GameOptions options = GameOptions::Default;
 		RecordsTable recordsTable;
+		int lastScore = 0;
 	};
 
 	void HandleWindowEventGameState(GameState& state, sf::Event& event);
