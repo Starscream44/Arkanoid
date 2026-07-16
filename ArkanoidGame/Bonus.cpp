@@ -2,12 +2,12 @@
 
 namespace Arkanoid
 {
-	void WidePaddleEffect::Apply(Paddle& paddle, Ball& ball)
+	void WidePaddleEffect::Apply(Paddle& paddle, Ball& ball, int& health)
 	{
 		paddle.SetWidthMultiplier(1.6f);
 	}
 
-	void WidePaddleEffect::Revert(Paddle& paddle, Ball& ball)
+	void WidePaddleEffect::Revert(Paddle& paddle, Ball& ball, int& health)
 	{
 		paddle.SetWidthMultiplier(1.f);
 	}
@@ -27,37 +27,36 @@ namespace Arkanoid
 		return "Wide paddle";
 	}
 
-	void SlowBallEffect::Apply(Paddle& paddle, Ball& ball)
+	void ExtraLifeEffect::Apply(Paddle& paddle, Ball& ball, int& health)
 	{
-		ball.SetSpeedMultiplier(0.65f);
+		++health;
 	}
 
-	void SlowBallEffect::Revert(Paddle& paddle, Ball& ball)
+	void ExtraLifeEffect::Revert(Paddle& paddle, Ball& ball, int& health)
 	{
-		ball.SetSpeedMultiplier(1.f);
 	}
 
-	float SlowBallEffect::GetDuration() const
+	float ExtraLifeEffect::GetDuration() const
 	{
-		return 7.f;
+		return 0.f;
 	}
 
-	sf::Color SlowBallEffect::GetColor() const
+	sf::Color ExtraLifeEffect::GetColor() const
 	{
-		return sf::Color(130, 130, 255);
+		return sf::Color(90, 255, 120);
 	}
 
-	std::string SlowBallEffect::GetName() const
+	std::string ExtraLifeEffect::GetName() const
 	{
-		return "Slow ball";
+		return "Extra life";
 	}
 
-	void FastPaddleEffect::Apply(Paddle& paddle, Ball& ball)
+	void FastPaddleEffect::Apply(Paddle& paddle, Ball& ball, int& health)
 	{
 		paddle.SetSpeedMultiplier(1.5f);
 	}
 
-	void FastPaddleEffect::Revert(Paddle& paddle, Ball& ball)
+	void FastPaddleEffect::Revert(Paddle& paddle, Ball& ball, int& health)
 	{
 		paddle.SetSpeedMultiplier(1.f);
 	}
@@ -140,7 +139,7 @@ namespace Arkanoid
 		case 0:
 			return std::make_unique<WidePaddleEffect>();
 		case 1:
-			return std::make_unique<SlowBallEffect>();
+			return std::make_unique<ExtraLifeEffect>();
 		default:
 			return std::make_unique<FastPaddleEffect>();
 		}

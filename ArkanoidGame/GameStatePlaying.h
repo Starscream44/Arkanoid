@@ -45,8 +45,11 @@ namespace Arkanoid
 		sf::Music music;
 		sf::SoundBuffer bonusPickupSoundBuffer;
 		sf::Sound bonusPickupSound;
+		sf::SoundBuffer ballLostSoundBuffer;
+		sf::Sound ballLostSound;
 
 		sf::Text scoreText;
+		sf::Text healthText;
 		sf::Text inputHintText;
 		MenuBackground levelBackground;
 		bool hasLevelBackground = false;
@@ -59,6 +62,7 @@ namespace Arkanoid
 		BonusFactory bonusFactory;
 
 		int score = 0;
+		int health = 0;
 		
 		//Blocks creator
 		std::unordered_map<BlockType, std::unique_ptr<BlockFactory>> factories;

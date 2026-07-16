@@ -16,8 +16,8 @@ namespace Arkanoid
 	public:
 		virtual ~BonusEffect() = default;
 
-		virtual void Apply(Paddle& paddle, Ball& ball) = 0;
-		virtual void Revert(Paddle& paddle, Ball& ball) = 0;
+		virtual void Apply(Paddle& paddle, Ball& ball, int& health) = 0;
+		virtual void Revert(Paddle& paddle, Ball& ball, int& health) = 0;
 		virtual float GetDuration() const = 0;
 		virtual sf::Color GetColor() const = 0;
 		virtual std::string GetName() const = 0;
@@ -26,18 +26,18 @@ namespace Arkanoid
 	class WidePaddleEffect final : public BonusEffect
 	{
 	public:
-		void Apply(Paddle& paddle, Ball& ball) override;
-		void Revert(Paddle& paddle, Ball& ball) override;
+		void Apply(Paddle& paddle, Ball& ball, int& health) override;
+		void Revert(Paddle& paddle, Ball& ball, int& health) override;
 		float GetDuration() const override;
 		sf::Color GetColor() const override;
 		std::string GetName() const override;
 	};
 
-	class SlowBallEffect final : public BonusEffect
+	class ExtraLifeEffect final : public BonusEffect
 	{
 	public:
-		void Apply(Paddle& paddle, Ball& ball) override;
-		void Revert(Paddle& paddle, Ball& ball) override;
+		void Apply(Paddle& paddle, Ball& ball, int& health) override;
+		void Revert(Paddle& paddle, Ball& ball, int& health) override;
 		float GetDuration() const override;
 		sf::Color GetColor() const override;
 		std::string GetName() const override;
@@ -46,8 +46,8 @@ namespace Arkanoid
 	class FastPaddleEffect final : public BonusEffect
 	{
 	public:
-		void Apply(Paddle& paddle, Ball& ball) override;
-		void Revert(Paddle& paddle, Ball& ball) override;
+		void Apply(Paddle& paddle, Ball& ball, int& health) override;
+		void Revert(Paddle& paddle, Ball& ball, int& health) override;
 		float GetDuration() const override;
 		sf::Color GetColor() const override;
 		std::string GetName() const override;

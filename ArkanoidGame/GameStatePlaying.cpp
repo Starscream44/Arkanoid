@@ -20,7 +20,7 @@ namespace Arkanoid
 	{
 		for (auto& activeEffect : data.activeBonusEffects)
 		{
-			activeEffect.effect->Revert(data.paddle, data.ball);
+			activeEffect.effect->Revert(data.paddle, data.ball, data.health);
 		}
 
 		data.activeBonusEffects.clear();
@@ -37,7 +37,7 @@ namespace Arkanoid
 		{
 			if (it->effect->GetName() == effectName)
 			{
-				it->effect->Revert(data.paddle, data.ball);
+				it->effect->Revert(data.paddle, data.ball, data.health);
 				it = data.activeBonusEffects.erase(it);
 			}
 			else
@@ -46,7 +46,12 @@ namespace Arkanoid
 			}
 		}
 
-		effect->Apply(data.paddle, data.ball);
+		effect->Apply(data.paddle, data.ball, data.health);
+
+		if (effect->GetDuration() <= 0.f)
+		{
+			return;
+		}
 
 		GameStatePlayingData::ActiveBonusEffect activeEffect;
 		activeEffect.remainingTime = effect->GetDuration();
@@ -61,7 +66,7 @@ namespace Arkanoid
 			it->remainingTime -= timeDelta;
 			if (it->remainingTime <= 0.f)
 			{
-				it->effect->Revert(data.paddle, data.ball);
+				it->effect->Revert(data.paddle, data.ball, data.health);
 				it = data.activeBonusEffects.erase(it);
 			}
 			else
@@ -84,6 +89,7 @@ namespace Arkanoid
 			{
 				data.bonusPickupSound.play();
 				ApplyBonusEffect(data, (*it)->TakeEffect());
+				data.healthText.setString("Health: " + std::to_string(data.health));
 				it = data.bonuses.erase(it);
 			}
 			else if ((*it)->IsMissed(static_cast<float>(SETTINGS.SCREEN_HEIGHT)))
@@ -111,6 +117,7 @@ namespace Arkanoid
 
 		file << "level " << data.currentLevel << '\n';
 		file << "score " << data.score << '\n';
+		file << "health " << data.health << '\n';
 		file << "paddle " << paddlePosition.x << ' ' << paddlePosition.y << '\n';
 		file << "ball " << ballPosition.x << ' ' << ballPosition.y << ' ' << ballVelocity.x << ' ' << ballVelocity.y << '\n';
 
@@ -135,6 +142,7 @@ namespace Arkanoid
 
 		int loadedLevel = 0;
 		int loadedScore = 0;
+		int loadedHealth = SETTINGS.INITIAL_HEALTH;
 		sf::Vector2f paddlePosition;
 		sf::Vector2f ballPosition;
 		sf::Vector2f ballVelocity;
@@ -149,7 +157,22 @@ namespace Arkanoid
 		{
 			return false;
 		}
-		if (!(file >> label >> paddlePosition.x >> paddlePosition.y) || label != "paddle")
+		if (!(file >> label))
+		{
+			return false;
+		}
+		if (label == "health")
+		{
+			if (!(file >> loadedHealth))
+			{
+				return false;
+			}
+			if (!(file >> label))
+			{
+				return false;
+			}
+		}
+		if (label != "paddle" || !(file >> paddlePosition.x >> paddlePosition.y))
 		{
 			return false;
 		}
@@ -180,6 +203,7 @@ namespace Arkanoid
 		LoadGameLevel(data, loadedLevel);
 
 		data.score = loadedScore;
+		data.health = loadedHealth;
 		data.paddle.SetPosition(paddlePosition);
 		data.ball.SetPosition(ballPosition);
 		data.ball.SetVelocity(ballVelocity);
@@ -262,6 +286,7 @@ namespace Arkanoid
 	void InitGameStatePlaying(GameStatePlayingData& data)
 	{
 		data.score = 0;
+		data.health = SETTINGS.INITIAL_HEALTH;
 		InitBlockFactories(data);
 		assert(data.levelLoader.LoadLevelsFromFile(SETTINGS.LEVELS_CONFIG_PATH));
 		LoadGameLevel(data, 0);
@@ -272,12 +297,19 @@ namespace Arkanoid
 		data.music.play();
 		assert(data.bonusPickupSoundBuffer.loadFromFile(SETTINGS.BONUS_PICKUP_SOUND_PATH));
 		data.bonusPickupSound.setBuffer(data.bonusPickupSoundBuffer);
+		assert(data.ballLostSoundBuffer.loadFromFile(SETTINGS.BALL_LOST_SOUND_PATH));
+		data.ballLostSound.setBuffer(data.ballLostSoundBuffer);
 
 		data.scoreText.setFont(data.font);
 		data.scoreText.setCharacterSize(24);
 		data.scoreText.setFillColor(sf::Color::White);
 		data.scoreText.setPosition(20.f, 20.f);
 		data.scoreText.setString("Score: " + std::to_string(data.score));
+
+		data.healthText.setFont(data.font);
+		data.healthText.setCharacterSize(24);
+		data.healthText.setFillColor(sf::Color::White);
+		data.healthText.setString("Health: " + std::to_string(data.health));
 
 		data.inputHintText.setFont(data.font);
 		data.inputHintText.setCharacterSize(18);
@@ -324,9 +356,22 @@ namespace Arkanoid
 
 		if (data.ball.IsBelowField())
 		{
-			Game& game = Application::Instance().GetGame();
-			game.UpdateRecord(SETTINGS.PLAYER_NAME, data.score);
-			game.LoseGame();
+			data.ballLostSound.play();
+			--data.health;
+			data.healthText.setString("Health: " + std::to_string(data.health));
+			ClearActiveBonusEffects(data);
+
+			if (data.health <= 0)
+			{
+				Game& game = Application::Instance().GetGame();
+				game.UpdateRecord(SETTINGS.PLAYER_NAME, data.score);
+				game.LoseGame();
+			}
+			else
+			{
+				data.ball.Restart();
+			}
+
 			return;
 		}
 
@@ -377,6 +422,7 @@ namespace Arkanoid
 		}
 
 		data.scoreText.setString("Score: " + std::to_string(data.score));
+		data.healthText.setString("Health: " + std::to_string(data.health));
 	}
 
 	void DrawGameStatePlaying(GameStatePlayingData& data, sf::RenderWindow& window)
@@ -400,6 +446,9 @@ namespace Arkanoid
 		data.ball.Draw(window);
 
 		window.draw(data.scoreText);
+		data.healthText.setOrigin(GetTextOrigin(data.healthText, { 0.5f, 0.f }));
+		data.healthText.setPosition(window.getView().getSize().x / 2.f, 20.f);
+		window.draw(data.healthText);
 		window.draw(data.inputHintText);
 	}
 }
