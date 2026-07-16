@@ -4,3 +4,5 @@ x64
 x86
 *.user
 .idea
+ArkanoidGame/Resources/records.txt
+ArkanoidGame/Resources/savegame.txt
