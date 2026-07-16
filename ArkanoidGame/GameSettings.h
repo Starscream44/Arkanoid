@@ -19,6 +19,11 @@ namespace Arkanoid
 	 	// Resources path
 	 	const std::string RESOURCES_PATH = "Resources/";
 	 	const std::string FONTS_PATH = RESOURCES_PATH + "Fonts/";
+	 	const std::string MENU_MUSIC_PATH = RESOURCES_PATH + "Music/menu.wav";
+	 	const std::string BATTLE_MUSIC_PATH = RESOURCES_PATH + "Music/battle.wav";
+	 	const std::string BALL_BOUNCE_SOUND_PATH = RESOURCES_PATH + "Music/bounce.wav";
+	 	const std::string BLOCK_DESTROY_SOUND_PATH = RESOURCES_PATH + "Music/brickdestroyed.wav";
+	 	const std::string BONUS_PICKUP_SOUND_PATH = RESOURCES_PATH + "Music/bonus.wav";
 	 	const std::string MAIN_MENU_BACKGROUND_PATH = RESOURCES_PATH + "main-menu-background.png";
 	 	const std::array<std::string, 3> LEVEL_BACKGROUND_PATHS =
 	 	{

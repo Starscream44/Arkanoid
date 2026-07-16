@@ -1,11 +1,31 @@
 #include "Block.h"
 
 #include "BlockObserver.h"
+#include "GameSettings.h"
 
+#include <SFML/Audio.hpp>
+
+#include <assert.h>
 #include <algorithm>
 
 namespace Arkanoid
 {
+	void PlayBlockDestroySound()
+	{
+		static sf::SoundBuffer buffer;
+		static sf::Sound sound;
+		static bool isLoaded = false;
+
+		if (!isLoaded)
+		{
+			assert(buffer.loadFromFile(SETTINGS.BLOCK_DESTROY_SOUND_PATH));
+			sound.setBuffer(buffer);
+			isLoaded = true;
+		}
+
+		sound.play();
+	}
+
 	void Block::Init(const sf::Vector2f& position, const sf::Vector2f& size)
 	{
 		shape.setSize(size);
@@ -64,6 +84,7 @@ namespace Arkanoid
 		}
 
 		isDestroyed = true;
+		PlayBlockDestroySound();
 		NotifyDestroyed();
 	}
 

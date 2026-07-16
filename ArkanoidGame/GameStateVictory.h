@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Audio.hpp>
 #include "SFML/Graphics.hpp"
 #include "Menu.h"
 #include "MenuBackground.h"
@@ -18,6 +19,7 @@ namespace Arkanoid
 
 	private:
 		sf::Font font;
+		sf::Music music;
 
 		MenuBackground background;
 		sf::Text titleText;

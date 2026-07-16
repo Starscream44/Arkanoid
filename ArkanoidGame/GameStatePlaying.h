@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Audio.hpp>
 #include "SFML/Graphics.hpp"
 #include "Paddle.h"
 #include "Ball.h"
@@ -41,6 +42,9 @@ namespace Arkanoid
 		};
 
 		sf::Font font;
+		sf::Music music;
+		sf::SoundBuffer bonusPickupSoundBuffer;
+		sf::Sound bonusPickupSound;
 
 		sf::Text scoreText;
 		sf::Text inputHintText;

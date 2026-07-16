@@ -1,6 +1,9 @@
 #include "Ball.h"
 #include "Paddle.h"
 #include "Block.h"
+#include "GameSettings.h"
+
+#include <assert.h>
 #include <cmath>
 
 
@@ -14,6 +17,8 @@ namespace Arkanoid
 		shape.setRadius(10.f);
 		shape.setFillColor(sf::Color::White);
 		shape.setOrigin(shape.getRadius(), shape.getRadius());
+		assert(bounceSoundBuffer.loadFromFile(SETTINGS.BALL_BOUNCE_SOUND_PATH));
+		bounceSound.setBuffer(bounceSoundBuffer);
 		Restart();
 	}
 
@@ -101,24 +106,33 @@ namespace Arkanoid
 	{
 		const float radius = shape.getRadius();
 		sf::Vector2f position = shape.getPosition();
+		bool bounced = false;
 
 		if (position.x - radius <= 0.f && velocity.x < 0.f)
 		{
 			position.x = radius;
 			velocity.x = -velocity.x;
+			bounced = true;
 		}
 		else if (position.x + radius >= fieldWidth && velocity.x > 0.f)
 		{
 			position.x = fieldWidth - radius;
 			velocity.x = -velocity.x;
+			bounced = true;
 		}
 
 		if (position.y - radius <= 0.f && velocity.y < 0.f)
 		{
 			position.y = radius;
 			velocity.y = -velocity.y;
+			bounced = true;
 		}
 		shape.setPosition(position);
+
+		if (bounced)
+		{
+			PlayBounceSound();
+		}
 	}
 
 	void Ball::BounceFromPaddle(const Paddle& paddle)
@@ -145,6 +159,7 @@ namespace Arkanoid
 			velocity.y = -std::abs(velocity.y);
 
 			shape.setPosition(ballX, paddleBounds.top - shape.getRadius());
+			PlayBounceSound();
 		}
 	}
 
@@ -196,5 +211,11 @@ namespace Arkanoid
 		}
 
 		shape.setPosition(position);
+		PlayBounceSound();
+	}
+
+	void Ball::PlayBounceSound()
+	{
+		bounceSound.play();
 	}
 }

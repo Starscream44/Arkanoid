@@ -15,6 +15,9 @@ namespace Arkanoid
 
 		data.timeSinceGameOver = 0.f;
 		InitMenuBackground(data.background, SETTINGS.MAIN_MENU_BACKGROUND_PATH, sf::Color(0, 0, 0, 185));
+		assert(data.music.openFromFile(SETTINGS.MENU_MUSIC_PATH));
+		data.music.setLoop(true);
+		data.music.play();
 
 		data.gameOverText.setFont(data.font);
 		data.gameOverText.setCharacterSize(48);
@@ -66,15 +69,29 @@ namespace Arkanoid
 			text.setFillColor(sf::Color::Green);
 		}
 
-		data.hintText.setFont(data.font);
-		data.hintText.setCharacterSize(24);
-		data.hintText.setFillColor(sf::Color::White);
-		data.hintText.setString("Score: " + std::to_string(game.GetLastScore()) + "\nPress Space to restart\nEsc to exit to main menu");
+		const std::vector<std::string> hintLines =
+		{
+			"Score: " + std::to_string(game.GetLastScore()),
+			"Press Space to restart",
+			"Esc to exit to main menu"
+		};
+
+		data.hintTexts.clear();
+		data.hintTexts.reserve(hintLines.size());
+		for (const std::string& hintLine : hintLines)
+		{
+			data.hintTexts.emplace_back();
+			sf::Text& text = data.hintTexts.back();
+			text.setFont(data.font);
+			text.setCharacterSize(24);
+			text.setFillColor(sf::Color::White);
+			text.setString(hintLine);
+		}
 	}
 
 	void ShutdownGameStateGameOver(GameStateGameOverData& data)
 	{
-		// We dont need to free resources here, because they will be freed automatically
+		data.music.stop();
 	}
 
 	void HandleGameStateGameOverWindowEvent(GameStateGameOverData& data, const sf::Event& event)
@@ -122,8 +139,13 @@ namespace Arkanoid
 		sf::Vector2f tablePosition = { viewSize.x / 2, viewSize.y / 2.f };
 		DrawTextList(window, textsList, 10.f, Orientation::Vertical, Alignment::Min, tablePosition, { 0.5f, 0.f });
 
-		data.hintText.setOrigin(GetTextOrigin(data.hintText, { 0.5f, 1.f }));
-		data.hintText.setPosition(viewSize.x / 2.f, viewSize.y - 50.f);
-		window.draw(data.hintText);
+		std::vector<sf::Text*> hintTextsList;
+		hintTextsList.reserve(data.hintTexts.size());
+		for (auto& text : data.hintTexts)
+		{
+			hintTextsList.push_back(&text);
+		}
+
+		DrawTextList(window, hintTextsList, 6.f, Orientation::Vertical, Alignment::Middle, { viewSize.x / 2.f, viewSize.y - 50.f }, { 0.5f, 1.f });
 	}
 }

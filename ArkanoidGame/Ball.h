@@ -1,5 +1,6 @@
 #pragma once
 #include "Collidable.h"
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
 namespace Arkanoid
@@ -31,9 +32,12 @@ namespace Arkanoid
 	private:
 		void ClampAndBounceFromWalls();
 		void BounceFromPaddle(const Paddle& paddle);
+		void PlayBounceSound();
 
 	private:
 		sf::CircleShape shape;
+		sf::SoundBuffer bounceSoundBuffer;
+		sf::Sound bounceSound;
 		sf::Vector2f velocity = { 250.f, -250.f };
 		float speedMultiplier = 1.f;
 

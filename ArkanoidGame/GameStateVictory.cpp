@@ -14,6 +14,9 @@ namespace Arkanoid
 		assert(data.font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
 
 		InitMenuBackground(data.background, SETTINGS.MAIN_MENU_BACKGROUND_PATH, sf::Color(0, 0, 0, 180));
+		assert(data.music.openFromFile(SETTINGS.MENU_MUSIC_PATH));
+		data.music.setLoop(true);
+		data.music.play();
 
 		data.titleText.setFont(data.font);
 		data.titleText.setCharacterSize(48);
@@ -53,7 +56,7 @@ namespace Arkanoid
 
 	void ShutdownGameStateVictory(GameStateVictoryData& data)
 	{
-		// Nothing special here for now
+		data.music.stop();
 	}
 
 	void HandleGameStateVictoryWindowEvent(GameStateVictoryData& data, const sf::Event& event)

@@ -9,6 +9,9 @@ namespace Arkanoid
 	{
 		assert(data.font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
 		InitMenuBackground(data.background, SETTINGS.MAIN_MENU_BACKGROUND_PATH, sf::Color(0, 0, 0, 150));
+		assert(data.music.openFromFile(SETTINGS.MENU_MUSIC_PATH));
+		data.music.setLoop(true);
+		data.music.play();
 
 		MenuItem startGame;
 		startGame.SetTextString("Start Game");
@@ -69,7 +72,7 @@ namespace Arkanoid
 
 	void ShutdownGameStateMainMenu(GameStateMainMenuData& data)
 	{
-		// No need to do anything here
+		data.music.stop();
 	}
 
 	void HandleGameStateMainMenuWindowEvent(GameStateMainMenuData& data, const sf::Event& event)

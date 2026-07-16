@@ -82,6 +82,7 @@ namespace Arkanoid
 		{
 			if ((*it)->IsCollected(data.paddle))
 			{
+				data.bonusPickupSound.play();
 				ApplyBonusEffect(data, (*it)->TakeEffect());
 				it = data.bonuses.erase(it);
 			}
@@ -266,6 +267,11 @@ namespace Arkanoid
 		LoadGameLevel(data, 0);
 
 		assert(data.font.loadFromFile(SETTINGS.FONTS_PATH + "Roboto-Regular.ttf"));
+		assert(data.music.openFromFile(SETTINGS.BATTLE_MUSIC_PATH));
+		data.music.setLoop(true);
+		data.music.play();
+		assert(data.bonusPickupSoundBuffer.loadFromFile(SETTINGS.BONUS_PICKUP_SOUND_PATH));
+		data.bonusPickupSound.setBuffer(data.bonusPickupSoundBuffer);
 
 		data.scoreText.setFont(data.font);
 		data.scoreText.setCharacterSize(24);
@@ -282,6 +288,7 @@ namespace Arkanoid
 
 	void ShutdownGameStatePlaying(GameStatePlayingData& data)
 	{
+		data.music.stop();
 		ClearActiveBonusEffects(data);
 		data.blocks.clear();
 	}

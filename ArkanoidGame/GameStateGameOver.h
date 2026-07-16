@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Audio.hpp>
 #include "SFML/Graphics.hpp"
 #include "MenuBackground.h"
 #include <vector>
@@ -18,13 +19,14 @@ namespace Arkanoid
 	private:
 		// Resources
 		sf::Font font;
+		sf::Music music;
 
 		float timeSinceGameOver = 0.f;
 
 		// UI data
 		MenuBackground background;
 		sf::Text gameOverText;
-		sf::Text hintText;
+		std::vector<sf::Text> hintTexts;
 		std::vector<sf::Text> recordsTableTexts;
 	};
 
